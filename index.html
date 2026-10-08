@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Enter a hashtag or tagline. The site researches it online first, then writes posts or comments from real facts.">
+<title>Tag to Post: research a hashtag, then write posts and comments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#E9EEF5;--ink:#101828;--panel:#fff;--accent:#2540FF;--accent-ink:#fff;--hi:#FFE066;--muted:#566073;--line:#CBD3E1;--link:#1B35D6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1320;--ink:#E8ECF5;--panel:#172036;--accent:#7C93FF;--accent-ink:#0E1320;--muted:#9AA6BD;--line:#2A3550;--link:#9DB0FF}}
+:root[data-theme="dark"]{--bg:#0E1320;--ink:#E8ECF5;--panel:#172036;--accent:#7C93FF;--accent-ink:#0E1320;--muted:#9AA6BD;--line:#2A3550;--link:#9DB0FF}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+main{max-width:720px;margin:0 auto;padding:28px 18px 64px}
+h1{font-size:clamp(2rem,8vw,3.2rem);line-height:1.05;font-weight:800;margin:0 0 8px;letter-spacing:-.02em}
+h2{font-size:1.15rem;margin:0 0 8px}
+a{color:var(--link)}
+.sub{color:var(--muted);margin:0 0 24px;max-width:48ch}
+.composer{background:var(--panel);border:2px solid var(--ink);border-radius:14px;padding:14px 16px;box-shadow:6px 6px 0 var(--hi)}
+.composer label.big{display:block;font-size:.9rem;color:var(--muted);margin-bottom:4px}
+#q{width:100%;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-size:1.6rem;font-weight:600;padding:4px 0}
+#q::placeholder{color:var(--muted);opacity:.7}
+.composer:focus-within{outline:3px solid var(--accent);outline-offset:3px}
+.row{display:flex;flex-wrap:wrap;gap:14px;margin:20px 0 6px;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field>span,.legend{font-size:.85rem;color:var(--muted)}
+select,input[type=number]{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;min-height:44px}
+input[type=number]{width:96px}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{padding:11px 16px;cursor:pointer;min-height:44px;display:flex;align-items:center}
+.seg input:checked+label{background:var(--ink);color:var(--bg);font-weight:600}
+.seg input:focus-visible+label{outline:3px solid var(--accent);outline-offset:-3px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip,button{font:inherit;cursor:pointer;min-height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 14px}
+.chip{min-width:44px}
+.chip:hover,.ghost:hover{border-color:var(--ink)}
+button:focus-visible,select:focus-visible,input[type=number]:focus-visible,.chip:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.checks{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 18px}
+.checks label{display:flex;gap:8px;align-items:center;min-height:44px}
+.checks input{width:20px;height:20px;accent-color:var(--accent)}
+.go{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:800;font-size:1.1rem;padding:12px 26px}
+.go:hover{filter:brightness(1.08)}
+.go:disabled{opacity:.6;cursor:progress}
+#status{min-height:1.5em;color:var(--muted);margin:14px 0 4px}
+.intel{background:var(--panel);border:1.5px solid var(--line);border-left:6px solid var(--hi);border-radius:12px;padding:14px 16px;margin:12px 0 16px}
+.intel p{margin:0 0 8px}
+.intel ul{margin:0;padding-left:20px}
+.intel li{margin-bottom:4px;overflow-wrap:anywhere}
+.small{font-size:.85rem;color:var(--muted)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 14px}
+#list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+#list li{background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+#list p{margin:0;overflow-wrap:anywhere}
+.meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
+.count{font-size:.78rem;color:var(--muted)}
+.copy{padding:6px 14px}
+.note{color:var(--muted);font-size:.85rem;margin-top:28px;max-width:62ch}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){#list li{animation:in .18s ease-out both}@keyframes in{from{opacity:0;transform:translateY(4px)}}}
+</style>
+</head>
+<body>
+<main>
+<h1>Type a tag.<br>Get the posts.</h1>
+<p class="sub">The site looks the tag up online first, then writes posts or comments from what it finds.</p>
+
+<div class="composer">
+<label class="big" for="q">Hashtag or tagline</label>
+<input id="q" type="text" placeholder="#YourHashtag or your tagline" autocomplete="off" maxlength="80">
+</div>
+
+<div class="row">
+<div class="field"><span class="legend" id="lm">Write</span>
+<div class="seg" role="radiogroup" aria-labelledby="lm">
+<input type="radio" name="mode" id="m1" value="posts" checked><label for="m1">Posts</label>
+<input type="radio" name="mode" id="m2" value="comments"><label for="m2">Comments</label>
+</div></div>
+<div class="field"><label for="n"><span>How many (1 to 100)</span></label>
+<input id="n" type="number" min="1" max="100" value="10" inputmode="numeric"></div>
+<div class="field"><label for="tone"><span>Tone</span></label>
+<select id="tone">
+<option value="mix">Mixed</option><option value="hype">Hype</option><option value="fun">Funny</option><option value="info">Informative</option><option value="chill">Chill</option>
+</select></div>
+</div>
+<div class="chips" aria-label="Quick counts" id="chips"></div>
+
+<div class="checks">
+<label><input type="checkbox" id="emo" checked> Add emojis</label>
+<label><input type="checkbox" id="ht" checked> Add hashtag to taglines</label>
+</div>
+
+<button class="go" id="go" type="button">Research and generate</button>
+<div id="status" role="status" aria-live="polite"></div>
+
+<section class="intel" id="intel" hidden aria-label="What was found online"></section>
+
+<div class="bar" id="bar" hidden>
+<button class="ghost" id="all" type="button">Copy all</button>
+<button class="ghost" id="again" type="button">Regenerate</button>
+</div>
+<ul id="list"></ul>
+<p class="note">Facts come from Wikipedia and Hacker News search results, so check them before you post. This page only writes text. Copy what you like and post it yourself; automated mass posting can break X's rules and get accounts limited.</p>
+</main>
+
+<script>
+(function(){
+var T={posts:{
+hype:{o:["Big news.","Calling it now.","Heads up.","Okay, listen.","No one's ready for this.","Mark this day."],
+b:["{t} is a total game changer.","{t} just raised the bar.","{t} is exactly what we've been waiting for.","{t} is moving faster than anyone expected.","{t} is only getting bigger from here.","{t} deserves way more attention."],
+c:["Don't say we didn't warn you.","Be early, not late.","Join in and spread the word.","The momentum is real.","Who's with me?","Let's make it trend."]},
+fun:{o:["Me, minding my business:","Breaking: my brain has a new obsession.","Plot twist.","Not me getting hooked again.","Tell me you're into it without telling me.","Hot take incoming."],
+b:["{t} lives rent free in my head now.","{t} is the main character today.","{t} just made my whole timeline better.","I came for the memes, stayed for {t}.","{t} is unexpectedly the best thing today.","Nobody asked, but {t} is elite."],
+c:["No notes.","That's the post.","Anyway, carry on.","I said what I said.","Send help (and snacks).","Zero regrets."]},
+info:{o:["Quick take.","Here's what stands out.","Worth knowing.","A short summary.","One idea, quick read.","For context."],
+b:["{t} is gaining attention because it solves a real need.","{t} is shaping how people talk about this space.","{t} stands out for its clarity and consistency.","{t} keeps showing up in conversations for good reason.","The interest around {t} is growing steadily.","{t} gives people a simple way to get involved."],
+c:["Worth following closely.","More to come.","Share your thoughts below.","Curious what you think.","Save this for later.","Follow for updates."]},
+chill:{o:["Just a thought.","Small moment today.","Slow morning, good vibes.","Honestly,","Real talk.","Low-key,"],
+b:["{t} has been on my mind lately.","I keep coming back to {t}.","{t} feels like a good thing to share.","I'm enjoying {t} more than I expected.","{t} made my day a bit brighter.","{t} is worth a minute of your time."],
+c:["Hope your day is going well.","That's all for now.","Take care, everyone.","Have a good one.","Just sharing.","Peace."]}},
+comments:{
+hype:{o:["Yes!","Love this!","This is huge!","Absolutely!","Incredible!","Let's go!"],
+b:["{t} is exactly what we needed.","{t} keeps getting better.","Totally behind {t}.","{t} is the real deal.","So glad to see {t} get the spotlight.","Everyone should know about {t}."],
+c:["Keep it coming!","Big support from here.","Can't wait to see more.","You nailed it.","Sharing this right now.","Count me in."]},
+fun:{o:["Okay, this got me.","Lol, same.","Not you saying it first.","I'm screaming.","Honestly iconic.","Stop, I love this."],
+b:["{t} wins again.","{t} really said \"watch this.\"","I'm fully on the {t} train.","{t} understood the assignment.","{t} living up to the hype, apparently.","My day is better because of {t}."],
+c:["10/10.","Take my like.","Respectfully, yes.","More of this please.","I'll be back for more.","Instant follow."]},
+info:{o:["Good point.","Thanks for sharing.","Well said.","Interesting angle.","Useful take.","Appreciate this."],
+b:["{t} is a topic worth discussing.","I've been reading about {t} too.","{t} deserves a closer look.","The context around {t} really helps.","{t} raises some great questions.","Seeing {t} explained this way is helpful."],
+c:["Looking forward to more.","Would love to hear more.","Following for updates.","Bookmarked for later.","Great discussion.","Thanks again."]},
+chill:{o:["Nice.","Love that.","Good one.","Agreed.","Totally get it.","Sweet."],
+b:["{t} is a good one.","{t} is a nice thing to see today.","I like what {t} stands for.","{t} is a solid choice.","Glad {t} came up.","{t} brought a smile to my face."],
+c:["Thanks for sharing.","Have a great day.","Appreciate it.","Good vibes.","Keep going.","Well done."]}}};
+var FP={hype:["Did you know?","Here's a fact worth shouting about:","Fresh fact:"],fun:["Fun fact:","Today I learned:","Not to flex, but:"],info:["Background:","Key fact:","For context:"],chill:["Something I learned:","Quick fact:","Interesting bit:"]};
+var NP=["In the news:","Latest:","Making headlines:"];
+var TONES=["hype","fun","info","chill"];
+var EM={hype:["🔥","🚀","⚡","🙌","💥","🎉"],fun:["😂","😭","🤣","👀","💀","✨"],info:["📌","📈","🧠","📊","🔎","💡"],chill:["🙂","🌿","☕","✨","🌤️","👍"]};
+var $=function(i){return document.getElementById(i)};
+var rand=function(n){return Math.floor(Math.random()*n)};
+var pick=function(a){return a[rand(a.length)]};
+var results=[],cache={q:null,data:null},busy=false;
+
+function status(m){$('status').textContent=m}
+function words(raw){return raw.replace(/^#/,'').replace(/[_\-]+/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([A-Za-z])(\d)/g,'$1 $2').replace(/(\d)([A-Za-z])/g,'$1 $2').replace(/\s+/g,' ').trim()}
+
+function getJSON(url){
+  var c=new AbortController(),t=setTimeout(function(){c.abort()},9000);
+  return fetch(url,{signal:c.signal}).then(function(r){clearTimeout(t);if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).catch(function(e){clearTimeout(t);throw e});
+}
+
+function sentences(text){
+  var clean=text.replace(/\s*\([^)]*\)/g,'').replace(/\s+/g,' ').trim();
+  return clean.split(/(?<=[.!?])\s+(?=[A-Z0-9"])/).map(function(s){return s.trim()}).filter(function(s){return s.length>=30&&s.length<=200}).slice(0,5);
+}
+
+function research(raw){
+  var q=words(raw),qw=q.toLowerCase().split(' ').filter(function(w){return w.length>2});
+  var rel=function(s){s=(s||'').toLowerCase();return qw.some(function(w){return s.indexOf(w)>-1})};
+  var wikiU='https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=3&prop=extracts%7Cinfo&exintro=1&explaintext=1&exsentences=5&inprop=url&format=json&origin=*';
+  var hnU='https://hn.algolia.com/api/v1/search_by_date?tags=story&hitsPerPage=15&query='+encodeURIComponent(q);
+  var wiki=getJSON(wikiU).then(function(d){
+    var pages=d&&d.query&&d.query.pages?Object.keys(d.query.pages).map(function(k){return d.query.pages[k]}):[];
+    pages.sort(function(a,b){return a.index-b.index});
+    for(var i=0;i<pages.length;i++){
+      var p=pages[i];
+      if(!p.extract||/may (also )?refer to/i.test(p.extract)||!rel(p.title))continue;
+      var s=sentences(p.extract);
+      if(s.length)return{title:p.title,url:p.fullurl,sentences:s};
+    }
+    return null;
+  }).catch(function(){return null});
+  var news=getJSON(hnU).then(function(d){
+    var seen={},out=[];
+    (d.hits||[]).forEach(function(h){
+      if(!h.title||!rel(h.title)||seen[h.title])return;seen[h.title]=1;
+      out.push({title:h.title.length>150?h.title.slice(0,147)+'…':h.title,url:h.url||('https://news.ycombinator.com/item?id='+h.objectID),date:h.created_at});
+    });
+    return out.slice(0,3);
+  }).catch(function(){return[]});
+  return Promise.all([wiki,news]).then(function(r){return{wiki:r[0],news:r[1]}});
+}
+
+function link(text,url){var a=document.createElement('a');a.href=url;a.textContent=text;a.target='_blank';a.rel='noopener noreferrer';return a}
+
+function showIntel(d){
+  var el=$('intel');el.textContent='';
+  var h=document.createElement('h2');h.textContent='What was found online';el.appendChild(h);
+  if(d.wiki){
+    var p=document.createElement('p');
+    p.appendChild(document.createTextNode(d.wiki.sentences.slice(0,2).join(' ')+' '));
+    var s=document.createElement('span');s.className='small';s.appendChild(document.createTextNode('Source: '));s.appendChild(link('Wikipedia, '+d.wiki.title,d.wiki.url));
+    p.appendChild(s);el.appendChild(p);
+  }
+  if(d.news.length){
+    var t=document.createElement('p');t.className='small';t.textContent='Recent headlines (Hacker News):';el.appendChild(t);
+    var ul=document.createElement('ul');
+    d.news.forEach(function(n){var li=document.createElement('li');li.appendChild(link(n.title,n.url));if(n.date){var dt=new Date(n.date);if(!isNaN(dt)){var sp=document.createElement('span');sp.className='small';sp.textContent=' ('+dt.toLocaleDateString()+')';li.appendChild(sp)}}ul.appendChild(li)});
+    el.appendChild(ul);
+  }
+  if(!d.wiki&&!d.news.length){
+    var m=document.createElement('p');m.textContent='Nothing reliable turned up online for this tag, or the lookup was blocked. The posts below use general wording, so add real details before you post.';el.appendChild(m);
+  }
+  el.hidden=false;
+}
+
+function copyText(t){
+  return new Promise(function(res){
+    function fb(){try{var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();var ok=document.execCommand('copy');document.body.removeChild(ta);res(ok)}catch(e){res(false)}}
+    try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){res(true)},fb)}else fb()}catch(e){fb()}
+  });
+}
+function flash(btn,label){var old=btn.dataset.l||btn.textContent;btn.dataset.l=old;btn.textContent=label;setTimeout(function(){btn.textContent=old},1200)}
+
+function fit(parts,e,tail,fact){
+  var tries=[parts,[parts[0]].concat(parts[1]),[parts[1],parts[2]],[parts[1]]];
+  // parts: [opener, body, closer]
+  var cands=[[parts[0],parts[1],parts[2]],[parts[1],parts[2]],[parts[0],parts[1]],[parts[1]]];
+  for(var i=0;i<cands.length;i++){var t=cands[i].join(' ')+e+tail;if(t.length<=280)return t}
+  var base=parts[1],room=280-e.length-tail.length-1;
+  if(fact&&base.length>room){base=base.slice(0,room-1).replace(/\s+\S*$/,'')+'…'}
+  return(base+e+tail).slice(0,280);
+}
+
+function generate(data,raw){
+  var n=Math.max(1,Math.min(100,parseInt($('n').value,10)||10));$('n').value=n;
+  var mode=document.querySelector('input[name=mode]:checked').value;
+  var toneSel=$('tone').value,emo=$('emo').checked,ht=$('ht').checked;
+  var isTag=raw.charAt(0)==='#',tag,topic;
+  if(isTag){tag='#'+raw.replace(/[^\p{L}\p{N}_]/gu,'');topic=tag}
+  else{tag='#'+raw.split(/\s+/).map(function(w){w=w.replace(/[^\p{L}\p{N}]/gu,'');return w?w.charAt(0).toUpperCase()+w.slice(1):''}).join('');topic=raw}
+  if(tag.length<2){status('Use letters or numbers in your hashtag or tagline.');return}
+  var pool=[];
+  if(data.wiki)data.wiki.sentences.forEach(function(s){pool.push({k:'w',t:s})});
+  data.news.forEach(function(h){pool.push({k:'n',t:'"'+h.title+'"'})});
+  var seen={},out=[],tries=0,factCount=0;
+  while(out.length<n&&tries<n*60){
+    tries++;
+    var tn=toneSel==='mix'?TONES[rand(4)]:toneSel,s=T[mode][tn],oi=rand(6),ci=rand(6),parts,key,useFact=pool.length&&Math.random()<0.75;
+    if(useFact){
+      var fi=rand(pool.length),pi=rand(3),f=pool[fi];
+      key='f'+tn+oi+fi+pi+ci;
+      parts=[s.o[oi],(f.k==='w'?FP[tn][pi]:NP[pi])+' '+f.t,s.c[ci]];
+    }else{
+      var bi=rand(6);key='t'+tn+oi+bi+ci;
+      parts=[s.o[oi],s.b[bi].replace(/\{t\}/g,topic),s.c[ci]];
+    }
+    if(seen[key])continue;seen[key]=1;
+    var e=emo?' '+pick(EM[tn]):'',tail=(ht&&!isTag)?' '+tag:'';
+    out.push(fit(parts,e,tail,useFact));
+    if(useFact)factCount++;
+  }
+  results=out;render();
+  var msg='Made '+out.length+' '+mode+(factCount?', '+factCount+' built on facts found online.':'.');
+  if(out.length<n)msg+=' That is the most unique ones this tone can give; try Mixed for more.';
+  status(msg);
+}
+
+function render(){
+  var ul=$('list');ul.textContent='';
+  results.forEach(function(t){
+    var li=document.createElement('li'),p=document.createElement('p');p.textContent=t;
+    var meta=document.createElement('div');meta.className='meta';
+    var c=document.createElement('span');c.className='count';c.textContent=t.length+'/280';
+    var b=document.createElement('button');b.type='button';b.className='copy';b.textContent='Copy';
+    b.addEventListener('click',function(){copyText(t).then(function(ok){flash(b,ok?'Copied':'Copy failed')})});
+    meta.appendChild(c);meta.appendChild(b);li.appendChild(p);li.appendChild(meta);ul.appendChild(li);
+  });
+  $('bar').hidden=!results.length;
+}
+
+function run(force){
+  if(busy)return;
+  var raw=$('q').value.trim();
+  if(!raw){status('Enter a hashtag or tagline first.');$('q').focus();return}
+  if(!force&&cache.q===raw&&cache.data){generate(cache.data,raw);return}
+  busy=true;$('go').disabled=true;status('Searching the web for "'+words(raw)+'"…');
+  research(raw).then(function(d){
+    cache={q:raw,data:d};showIntel(d);generate(d,raw);
+  }).catch(function(){
+    var d={wiki:null,news:[]};cache={q:raw,data:d};showIntel(d);generate(d,raw);
+  }).then(function(){busy=false;$('go').disabled=false});
+}
+
+[5,10,25,50,100].forEach(function(v){
+  var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=v;
+  b.addEventListener('click',function(){$('n').value=v});$('chips').appendChild(b);
+});
+$('go').addEventListener('click',function(){run(true)});
+$('again').addEventListener('click',function(){run(false)});
+$('q').addEventListener('keydown',function(e){if(e.key==='Enter')run(true)});
+$('all').addEventListener('click',function(){var b=$('all');copyText(results.join('\n\n')).then(function(ok){flash(b,ok?'Copied all':'Copy failed')})});
+})();
+</script>
+</body>
+</html>
