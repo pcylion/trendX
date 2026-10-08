@@ -3,134 +3,218 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Enter a hashtag or tagline. The site pulls the latest news first, then writes posts or comments of the type you choose.">
-<title>Tag to Post: latest news on a hashtag, then posts and comments</title>
+<title>TrendX: hashtag post studio</title>
+<meta name="description" content="Enter a hashtag or tagline, check the latest news, and get natural posts and comments to share.">
+<meta name="theme-color" content="#F4F6FA">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TrendX">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>try{var th=localStorage.getItem('trendx_theme');if(th)document.documentElement.setAttribute('data-theme',th)}catch(e){}</script>
 <style>
-:root{--bg:#E9EEF5;--ink:#101828;--panel:#fff;--accent:#2540FF;--accent-ink:#fff;--hi:#FFE066;--muted:#566073;--line:#CBD3E1;--link:#1B35D6;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1320;--ink:#E8ECF5;--panel:#172036;--accent:#7C93FF;--accent-ink:#0E1320;--muted:#9AA6BD;--line:#2A3550;--link:#9DB0FF}}
-:root[data-theme="dark"]{--bg:#0E1320;--ink:#E8ECF5;--panel:#172036;--accent:#7C93FF;--accent-ink:#0E1320;--muted:#9AA6BD;--line:#2A3550;--link:#9DB0FF}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*,*::before,*::after{box-sizing:inherit}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
-main{max-width:720px;margin:0 auto;padding:28px 18px 64px}
-h1{font-size:clamp(2rem,8vw,3.2rem);line-height:1.05;font-weight:800;margin:0 0 8px;letter-spacing:-.02em}
-h2{font-size:1.15rem;margin:0 0 8px}
+:root{--bg:#F4F6FA;--surface:#FFFFFF;--surface2:#F7F9FC;--ink:#0F172A;--muted:#5B6577;--line:#E1E7F0;--accent:#2447F5;--accent-h:#1B38C9;--accent-ink:#FFFFFF;--soft:#EAF0FF;--link:#1D3FE0;--ok:#0F7B4B;--shadow:0 1px 2px rgba(15,23,42,.05),0 4px 14px rgba(15,23,42,.04);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1020;--surface:#121A30;--surface2:#0F1729;--ink:#E7ECF7;--muted:#98A3BC;--line:#232E4A;--accent:#7A93FF;--accent-h:#9AAEFF;--accent-ink:#0B1020;--soft:#1A2547;--link:#9DB0FF;--ok:#4ADE9A;--shadow:none;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B1020;--surface:#121A30;--surface2:#0F1729;--ink:#E7ECF7;--muted:#98A3BC;--line:#232E4A;--accent:#7A93FF;--accent-h:#9AAEFF;--accent-ink:#0B1020;--soft:#1A2547;--link:#9DB0FF;--ok:#4ADE9A;--shadow:none;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:84px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.55;padding-bottom:env(safe-area-inset-bottom,0px);-webkit-tap-highlight-color:transparent}
 a{color:var(--link)}
-.sub{color:var(--muted);margin:0 0 24px;max-width:48ch}
-.composer{background:var(--panel);border:2px solid var(--ink);border-radius:14px;padding:14px 16px;box-shadow:6px 6px 0 var(--hi)}
-.composer label.big{display:block;font-size:.9rem;color:var(--muted);margin-bottom:4px}
-#q{width:100%;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-size:1.6rem;font-weight:600;padding:4px 0}
-#q::placeholder{color:var(--muted);opacity:.7}
-.composer:focus-within{outline:3px solid var(--accent);outline-offset:3px}
-.row{display:flex;flex-wrap:wrap;gap:14px;margin:20px 0 6px;align-items:flex-end}
-.field{display:flex;flex-direction:column;gap:4px;min-width:0}
-.field>span,.legend{font-size:.85rem;color:var(--muted)}
-.grow{flex:1 1 220px}
-select,input[type=number],input.txt{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;min-height:44px}
-input[type=number]{width:96px}
-input.txt{width:100%}
-.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}
-.seg input{position:absolute;opacity:0;pointer-events:none}
-.seg label{padding:11px 16px;cursor:pointer;min-height:44px;display:flex;align-items:center}
-.seg input:checked+label{background:var(--ink);color:var(--bg);font-weight:600}
-.seg input:focus-visible+label{outline:3px solid var(--accent);outline-offset:-3px}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip,button{font:inherit;cursor:pointer;min-height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 14px}
-.chip{min-width:44px}
-.chip:hover,.ghost:hover{border-color:var(--ink)}
-button:focus-visible,select:focus-visible,input:focus-visible,.chip:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.checks{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 8px}
-.checks label{display:flex;gap:8px;align-items:center;min-height:44px}
-.checks input{width:20px;height:20px;accent-color:var(--accent)}
-details.adv{margin:0 0 16px;color:var(--muted)}
-details.adv summary{cursor:pointer;min-height:36px;display:flex;align-items:center}
-details.adv p{margin:6px 0}
-.go{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:800;font-size:1.1rem;padding:12px 26px}
-.go:hover{filter:brightness(1.08)}
-.go:disabled{opacity:.6;cursor:progress}
-#status{min-height:1.5em;color:var(--muted);margin:14px 0 4px}
-.intel{background:var(--panel);border:1.5px solid var(--line);border-left:6px solid var(--hi);border-radius:12px;padding:14px 16px;margin:12px 0 16px}
-.intel p{margin:0 0 8px}
-.intel ul{margin:0;padding-left:20px}
-.intel li{margin-bottom:6px;overflow-wrap:anywhere}
-.small{font-size:.85rem;color:var(--muted)}
-.confirm{margin-top:14px;padding-top:12px;border-top:1.5px solid var(--line)}
-.crow{display:flex;gap:10px;align-items:flex-start;min-height:44px;padding:6px 0;cursor:pointer;overflow-wrap:anywhere}
-.crow input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:var(--accent)}
-.bar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 14px}
-#list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-#list li{background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
-#list p{margin:0;overflow-wrap:anywhere}
-.meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
-.count{font-size:.78rem;color:var(--muted)}
-.copy{padding:6px 14px}
-.xbtn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:6px 14px;border-radius:10px;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:600;white-space:nowrap}
-.xbtn:hover{filter:brightness(1.08)}
-.note{color:var(--muted);font-size:.85rem;margin-top:28px;max-width:62ch}
+h1,h2,h3,p{margin:0}
 [hidden]{display:none!important}
-@media (prefers-reduced-motion:no-preference){#list li{animation:in .18s ease-out both}@keyframes in{from{opacity:0;transform:translateY(4px)}}}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top-in{max-width:1080px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.brand b{font-size:1.15rem;font-weight:800;letter-spacing:-.01em}
+.brand span{color:var(--muted);font-size:.85rem;display:none}
+@media (min-width:640px){.brand span{display:inline}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s,transform .05s}
+.btn:hover{border-color:color-mix(in srgb,var(--ink) 30%,var(--line))}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{background:var(--accent-h);border-color:var(--accent-h)}
+.btn.icon{width:44px;padding:0}
+.btn.big{min-height:52px;font-size:1.02rem;width:100%}
+.btn.sm{min-height:40px;padding:0 14px;font-size:.92rem}
+.btn:disabled{opacity:.7;cursor:progress}
+.btn.loading::before{content:"";width:16px;height:16px;border-radius:50%;border:2.5px solid currentColor;border-right-color:transparent;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* layout */
+.app{max-width:1080px;margin:0 auto;padding:20px 16px 28px;display:grid;gap:20px}
+@media (min-width:900px){.app{grid-template-columns:400px minmax(0,1fr);align-items:start;gap:28px;padding-top:28px}.setup{position:sticky;top:84px}}
+.setup,.output{display:grid;gap:14px;min-width:0}
+.hero h1{font-size:clamp(1.55rem,5vw,2rem);line-height:1.15;font-weight:800;letter-spacing:-.02em}
+.hero p{color:var(--muted);margin-top:6px;max-width:44ch}
+
+/* cards and form */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);display:grid;gap:14px;min-width:0}
+.sh{display:flex;align-items:center;gap:10px;font-size:1rem;font-weight:700}
+.num{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--accent);font-size:.8rem;font-weight:800}
+.lbl{display:block;font-size:.85rem;font-weight:600;margin-bottom:6px}
+.opt{color:var(--muted);font-weight:500}
+.inp{width:100%;min-height:48px;padding:11px 13px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font:inherit}
+.inp::placeholder{color:var(--muted);opacity:.8}
+.inp:focus{border-color:var(--accent)}
+.inp.lg{font-size:1.15rem;font-weight:700}
+.two{display:grid;gap:12px}
+@media (min-width:420px){.two{grid-template-columns:1fr 150px}}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:12px;background:var(--surface2);padding:4px;gap:4px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{display:flex;align-items:center;justify-content:center;min-height:42px;border-radius:9px;cursor:pointer;font-weight:600;color:var(--muted)}
+.seg input:checked+label{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(15,23,42,.15)}
+.seg input:focus-visible+label{outline:3px solid var(--accent);outline-offset:1px}
+.countrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.countrow .inp{width:92px;text-align:center;font-weight:700}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;cursor:pointer}
+.sw span{font-weight:600}
+.sw small{display:block;color:var(--muted);font-weight:400;font-size:.8rem}
+.sw input{appearance:none;-webkit-appearance:none;flex:none;width:46px;height:28px;border-radius:99px;background:var(--line);position:relative;cursor:pointer;transition:background .15s;margin:0}
+.sw input::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
+.sw input:checked{background:var(--accent)}
+.sw input:checked::after{transform:translateX(18px)}
+details.adv summary{cursor:pointer;min-height:40px;display:flex;align-items:center;color:var(--muted);font-weight:600;font-size:.9rem}
+details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
+.status{color:var(--muted);font-size:.92rem;min-height:1.4em}
+
+/* results */
+.empty{border:1.5px dashed var(--line);border-radius:16px;padding:28px 22px;text-align:center;color:var(--muted)}
+.empty h2{color:var(--ink);font-size:1.1rem;margin-bottom:6px}
+.empty ol{text-align:left;max-width:30ch;margin:14px auto 0;padding-left:20px}
+.intel h2{font-size:1rem;font-weight:700}
+.intel ul{margin:0;padding-left:18px;display:grid;gap:8px}
+.intel li{overflow-wrap:anywhere}
+.small{font-size:.85rem;color:var(--muted)}
+.confirm{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:4px}
+.crow{display:flex;gap:12px;align-items:flex-start;min-height:44px;padding:8px 10px;border-radius:12px;cursor:pointer;overflow-wrap:anywhere}
+.crow:hover{background:var(--surface2)}
+.crow input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:var(--accent)}
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bar h2{font-size:1.05rem;font-weight:700;margin-right:auto}
+#list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+#list li{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:12px;box-shadow:var(--shadow)}
+#list p{overflow-wrap:anywhere;font-size:1rem}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.count{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.acts{display:flex;gap:8px}
+@media (prefers-reduced-motion:no-preference){#list li{animation:in .2s ease-out both}@keyframes in{from{opacity:0;transform:translateY(6px)}}}
+
+/* footer */
+.legal{max-width:1080px;margin:0 auto;padding:6px 16px 36px;color:var(--muted);font-size:.82rem}
+.legal h3{font-size:.85rem;color:var(--ink);margin-bottom:6px}
+.legal p+p{margin-top:6px}
 </style>
 </head>
 <body>
-<main>
-<h1>Type a tag.<br>Get the posts.</h1>
-<p class="sub">The site checks the latest news on your tag first, then writes natural, human-sounding posts or comments of the type you choose.</p>
+<header class="top"><div class="top-in">
+  <div class="brand">
+    <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="var(--accent)"/><g stroke="var(--accent-ink)" stroke-width="2.6" stroke-linecap="round" fill="none"><path d="M13.5 8l-2 16M21 8l-2 16M8 13h15M7 19.5h15"/></g><circle cx="25.5" cy="7.5" r="3" fill="#FFD84D"/></svg>
+    <b>TrendX</b><span>Hashtag post studio</span>
+  </div>
+  <button class="btn sm" id="install" type="button" hidden>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Install app
+  </button>
+  <button class="btn icon" id="theme" type="button" aria-label="Switch color theme">
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
+  </button>
+</div></header>
 
-<div class="composer">
-<label class="big" for="q">Hashtag or tagline</label>
-<input id="q" type="text" placeholder="#YourHashtag or your tagline" autocomplete="off" maxlength="80">
-</div>
+<main class="app">
+<section class="setup" aria-label="Create">
+  <div class="hero">
+    <h1>Write posts and comments from any hashtag</h1>
+    <p>It checks the latest news first, then writes natural lines you can copy or send to X.</p>
+  </div>
 
-<div class="row">
-<div class="field"><span class="legend" id="lm">Write</span>
-<div class="seg" role="radiogroup" aria-labelledby="lm">
-<input type="radio" name="mode" id="m1" value="posts" checked><label for="m1">Posts</label>
-<input type="radio" name="mode" id="m2" value="comments"><label for="m2">Comments</label>
-</div></div>
-<div class="field"><label for="n"><span>How many (1 to 100)</span></label>
-<input id="n" type="number" min="1" max="100" value="10" inputmode="numeric"></div>
-<div class="field"><label for="type"><span>Type</span></label>
-<select id="type">
-<option value="mix">Mixed</option><option value="pos">Positive</option><option value="crit">Critical</option><option value="neg">Negative</option><option value="bal">Balanced</option><option value="ask">Questioning</option>
-</select></div>
-</div>
+  <div class="card">
+    <h2 class="sh"><span class="num">1</span>Topic</h2>
+    <div>
+      <label class="lbl" for="q">Hashtag or tagline</label>
+      <input id="q" class="inp lg" type="text" placeholder="#YourHashtag or your tagline" autocomplete="off" autocapitalize="off" maxlength="80">
+    </div>
+    <div class="two">
+      <div>
+        <label class="lbl" for="kw">News keyword <span class="opt">(optional)</span></label>
+        <input id="kw" class="inp" type="text" maxlength="80" autocomplete="off">
+      </div>
+      <div>
+        <label class="lbl" for="region">News region</label>
+        <select id="region" class="inp"><option value="IN">India</option><option value="US">United States</option><option value="GB">United Kingdom</option></select>
+      </div>
+    </div>
+  </div>
 
-<div class="row">
-<div class="field grow"><label for="kw"><span>News keyword (optional)</span></label>
-<input id="kw" class="txt" type="text" maxlength="80" autocomplete="off"></div>
-<div class="field"><label for="region"><span>News region</span></label>
-<select id="region"><option value="IN">India</option><option value="US">United States</option><option value="GB">United Kingdom</option></select></div>
-</div>
-<div class="chips" aria-label="Quick counts" id="chips"></div>
+  <div class="card">
+    <h2 class="sh"><span class="num">2</span>Style</h2>
+    <div>
+      <span class="lbl" id="lm">Write</span>
+      <div class="seg" role="radiogroup" aria-labelledby="lm">
+        <input type="radio" name="mode" id="m1" value="posts" checked><label for="m1">Posts</label>
+        <input type="radio" name="mode" id="m2" value="comments"><label for="m2">Comments</label>
+      </div>
+    </div>
+    <div>
+      <label class="lbl" for="type">Type</label>
+      <select id="type" class="inp">
+        <option value="mix">Mixed</option><option value="pos">Positive</option><option value="crit">Critical</option><option value="neg">Negative</option><option value="bal">Balanced</option><option value="ask">Questioning</option>
+      </select>
+    </div>
+    <div>
+      <label class="lbl" for="n">How many (1 to 100)</label>
+      <div class="countrow">
+        <input id="n" class="inp" type="number" min="1" max="100" value="10" inputmode="numeric">
+        <div class="chips" id="chips" aria-label="Quick counts"></div>
+      </div>
+    </div>
+    <label class="sw"><span>Add emojis</span><input type="checkbox" id="emo"></label>
+    <label class="sw"><span>Add hashtag to taglines<small>Hashtags you type are always included</small></span><input type="checkbox" id="ht" checked></label>
+    <details class="adv">
+      <summary>Advanced: my own news relay</summary>
+      <p>If news keeps failing, deploy the free relay from worker.js on Cloudflare Workers and paste its address here. It is saved on this device only.</p>
+      <input id="proxy" class="inp" type="url" placeholder="Relay address" autocomplete="off">
+    </details>
+  </div>
 
-<div class="checks">
-<label><input type="checkbox" id="emo"> Add emojis</label>
-<label><input type="checkbox" id="ht" checked> Add hashtag to taglines</label>
-</div>
+  <button class="btn primary big" id="go" type="button"><span id="goLabel">Get latest news and generate</span></button>
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+</section>
 
-<details class="adv">
-<summary>Advanced: my own news relay (optional)</summary>
-<p class="small">If news keeps failing, deploy the free relay from the repo's worker.js file on Cloudflare Workers and paste its address here. It is saved on this device only.</p>
-<input id="proxy" class="txt" type="url" placeholder="Relay address" autocomplete="off">
-</details>
-
-<button class="go" id="go" type="button">Get latest news and generate</button>
-<div id="status" role="status" aria-live="polite"></div>
-
-<section class="intel" id="intel" hidden aria-label="Latest news"></section>
-
-<div class="bar" id="bar" hidden>
-<button class="ghost" id="all" type="button">Copy all</button>
-<button class="ghost" id="again" type="button">Regenerate</button>
-</div>
-<ul id="list"></ul>
-<p class="note">Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This page only writes text. The Post on X button just opens X with the text filled in, and you press Post yourself; automated mass posting can break X's rules and get accounts limited. Critical and negative lines stay on opinions about the game and the claims, with no insults, threats or false accusations, and they are not meant to be posted in bulk at one person.</p>
+<section class="output" id="output" aria-label="Results">
+  <div class="empty" id="empty">
+    <h2>Your results will appear here</h2>
+    <p>Three quick steps:</p>
+    <ol><li>Enter a hashtag or tagline</li><li>Choose posts or comments, type and count</li><li>Tap generate, then copy or send to X</li></ol>
+  </div>
+  <section class="card intel" id="intel" hidden aria-label="Latest news"></section>
+  <div class="bar" id="bar" hidden>
+    <h2 id="rc">Results</h2>
+    <button class="btn sm" id="again" type="button">Regenerate</button>
+    <button class="btn sm primary" id="all" type="button">Copy all</button>
+  </div>
+  <ul id="list"></ul>
+</section>
 </main>
 
+<footer class="legal">
+  <h3>Responsible use</h3>
+  <p>Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This app only writes text. The Post on X button just opens X with the text filled in, and you press Post yourself. Automated mass posting can break X's rules and get accounts limited. Critical and negative lines stay on opinions about the game and the claims, with no insults, threats or false accusations, and they are not meant to be posted in bulk at one person.</p>
+  <p>Install: on Android tap Install app above. On iPhone use Share, then Add to Home Screen.</p>
+</footer>
+
 <script>
+
 (function(){
 var C={
 pos:["{n} is the boss!","Always rooting for {n}!","{n} never disappoints!","The real boss is here!","{n} has unmatched energy!","Simply the best!","{n} deserves all the love!","What a legend!","Keep shining, {n}!","{n} rocks!","Always amazing, {n}!","Respect for {n}!","Nobody does it like {n}!","{n} brings the fire!","Forever supporting {n}!","Boss of the game!","{n} all the way!","Proud {n} fan!","The one and only {n}!","{n} for the win!","Absolute legend!","{n} has got it all!","True boss energy!","{n} is simply iconic!","{n}'s presence is unmatched!","{n} is a whole mood!","Can't get enough of {n}!","Winning hearts every single day, that's {n}!","Big love for {n}!","{n} is on another level!","{n} always delivers!","You just can't ignore {n}!","Team {n} forever!","{n} makes it look so easy!","Pure class from {n}!","{n} is unstoppable right now!","This is {n}'s time to shine!","Only {n} can pull this off!","Fans are with you, {n}!","{s}!","{s}, no doubt!","Say it with me: {s}!","{s}, always!"],
@@ -308,7 +392,7 @@ function showIntel(d){
     if(d.auto){var tip=document.createElement('p');tip.className='small';tip.style.marginTop='8px';tip.textContent='Wrong topic? Type a more exact keyword in the News keyword box and run again.';el.appendChild(tip)}
   }else{
     var m=document.createElement('p');
-    m.textContent=d.ok?'No news from the last 30 days matched this search. Try the News keyword box with the full name plus the show or event.':'No recent news came back. Either there is none for this search, or the free news relays were blocked. Try again in a minute, use the News keyword box, or add your own relay under Advanced.';
+    m.textContent=d.offline?'You are offline, so the news could not be checked. The lines below are general. Reconnect and run again for news-based lines.':d.ok?'No news from the last 30 days matched this search. Try the News keyword box with the full name plus the show or event.':'No recent news came back. Either there is none for this search, or the free news relays were blocked. Try again in a minute, use the News keyword box, or add your own relay under Advanced.';
     el.appendChild(m);
   }
   var cx=newsContext(d.news);
@@ -427,15 +511,34 @@ function render(){
   var ul=$('list');ul.textContent='';
   results.forEach(function(t){
     var li=document.createElement('li'),p=document.createElement('p');p.textContent=t;
-    var meta=document.createElement('div');meta.className='meta';
-    var c=document.createElement('span');c.className='count';c.textContent=t.length+'/280';
-    var b=document.createElement('button');b.type='button';b.className='copy';b.textContent='Copy';
+    var foot=document.createElement('div');foot.className='foot';
+    var c=document.createElement('span');c.className='count';c.textContent=t.length+' / 280';
+    var acts=document.createElement('div');acts.className='acts';
+    var b=document.createElement('button');b.type='button';b.className='btn sm';b.textContent='Copy';
     b.addEventListener('click',function(){copyText(t).then(function(ok){flash(b,ok?'Copied':'Copy failed')})});
-    var x=document.createElement('a');x.className='xbtn';x.textContent='Post on X';
+    var x=document.createElement('a');x.className='btn sm primary';x.textContent='Post on X';
     x.href='https://x.com/intent/post?text='+encodeURIComponent(t);x.target='_blank';x.rel='noopener noreferrer';
-    meta.appendChild(c);meta.appendChild(b);meta.appendChild(x);li.appendChild(p);li.appendChild(meta);ul.appendChild(li);
+    acts.appendChild(b);acts.appendChild(x);foot.appendChild(c);foot.appendChild(acts);
+    li.appendChild(p);li.appendChild(foot);ul.appendChild(li);
   });
-  $('bar').hidden=!results.length;
+  var has=results.length>0;
+  $('bar').hidden=!has;$('empty').hidden=has;
+  if(has){
+    var mode=document.querySelector('input[name=mode]:checked').value,ty=$('type'),tl='';
+    if(ty.options&&ty.options[ty.selectedIndex])tl=ty.options[ty.selectedIndex].textContent;
+    $('rc').textContent=results.length+' '+(mode==='posts'?'posts':'comments')+(tl?' · '+tl:'');
+  }
+}
+
+function setBusy(b){
+  busy=b;$('go').disabled=b;
+  $('go').className=b?'btn primary big loading':'btn primary big';
+  $('goLabel').textContent=b?'Searching the latest news…':'Get latest news and generate';
+}
+function reveal(){
+  if(typeof window==='undefined'||!window.matchMedia)return;
+  var o=$('output');
+  if(o&&o.scrollIntoView&&!window.matchMedia('(min-width:900px)').matches)o.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});
 }
 
 function run(force){
@@ -444,12 +547,16 @@ function run(force){
   if(!raw){status('Enter a hashtag or tagline first.');$('q').focus();return}
   var key=raw+'|'+kw+'|'+region+'|'+proxyBase();
   if(!force&&cache.k===key&&cache.data){generate(cache.data,raw);return}
-  busy=true;$('go').disabled=true;status('Searching the latest news for "'+(kw||words(raw))+'"…');
+  if(typeof navigator!=='undefined'&&navigator.onLine===false){
+    var d0={wiki:null,news:[],q:kw||words(raw),ok:false,auto:!kw,offline:true};
+    cache={k:key,data:d0};confirmed={};showIntel(d0);generate(d0,raw);reveal();return;
+  }
+  setBusy(true);status('Searching the latest news for "'+(kw||words(raw))+'"…');
   research(raw,kw,region).then(function(d){
-    cache={k:key,data:d};confirmed={};showIntel(d);generate(d,raw);
+    cache={k:key,data:d};confirmed={};showIntel(d);generate(d,raw);reveal();
   }).catch(function(){
-    var d={wiki:null,news:[],q:kw||words(raw),ok:false,auto:!kw};cache={k:key,data:d};showIntel(d);generate(d,raw);
-  }).then(function(){busy=false;$('go').disabled=false});
+    var d={wiki:null,news:[],q:kw||words(raw),ok:false,auto:!kw};cache={k:key,data:d};showIntel(d);generate(d,raw);reveal();
+  }).then(function(){setBusy(false)});
 }
 
 [5,10,25,50,100].forEach(function(v){
@@ -462,6 +569,34 @@ $('go').addEventListener('click',function(){run(true)});
 $('again').addEventListener('click',function(){run(false)});
 $('q').addEventListener('keydown',function(e){if(e.key==='Enter')run(true)});
 $('all').addEventListener('click',function(){var b=$('all');copyText(results.join('\n\n')).then(function(ok){flash(b,ok?'Copied all':'Copy failed')})});
+(function appShell(){
+  if(typeof window==='undefined')return;
+  var root=document.documentElement,deferred=null;
+  function isDark(t){return t==='dark'||(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)}
+  function paint(t){
+    var m=document.querySelector('meta[name=theme-color]');
+    if(m)m.setAttribute('content',isDark(t)?'#0B1020':'#F4F6FA');
+    $('theme').setAttribute('aria-label',isDark(t)?'Switch to light theme':'Switch to dark theme');
+  }
+  var saved=null;try{saved=localStorage.getItem('trendx_theme')}catch(e){}
+  paint(saved);
+  $('theme').addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme'),next=isDark(cur)?'light':'dark';
+    root.setAttribute('data-theme',next);paint(next);
+    try{localStorage.setItem('trendx_theme',next)}catch(e){}
+  });
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;$('install').hidden=false});
+  window.addEventListener('appinstalled',function(){$('install').hidden=true;deferred=null});
+  $('install').addEventListener('click',function(){
+    if(!deferred)return;
+    deferred.prompt();
+    deferred.userChoice.then(function(){deferred=null;$('install').hidden=true},function(){});
+  });
+  window.addEventListener('offline',function(){status('You are offline. News can not be checked, but you can still write general lines.')});
+  if('serviceWorker' in navigator&&location.protocol==='https:'){
+    window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
+  }
+})();
 })();
 </script>
 </body>
