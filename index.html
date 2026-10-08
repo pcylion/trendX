@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Enter a hashtag or tagline. The site researches it online first, then writes posts or comments from real facts.">
-<title>Tag to Post: research a hashtag, then write posts and comments</title>
+<meta name="description" content="Enter a hashtag or tagline. The site pulls the latest news first, then writes posts or comments from it.">
+<title>Tag to Post: latest news on a hashtag, then posts and comments</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
@@ -27,8 +27,10 @@ a{color:var(--link)}
 .composer:focus-within{outline:3px solid var(--accent);outline-offset:3px}
 .row{display:flex;flex-wrap:wrap;gap:14px;margin:20px 0 6px;align-items:flex-end}
 .field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.grow{flex:1 1 220px}
+input[type=text].kw{width:100%}
 .field>span,.legend{font-size:.85rem;color:var(--muted)}
-select,input[type=number]{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;min-height:44px}
+select,input[type=number],input[type=text].kw{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;min-height:44px}
 input[type=number]{width:96px}
 .seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}
 .seg input{position:absolute;opacity:0;pointer-events:none}
@@ -67,7 +69,7 @@ button:focus-visible,select:focus-visible,input[type=number]:focus-visible,.chip
 <body>
 <main>
 <h1>Type a tag.<br>Get the posts.</h1>
-<p class="sub">The site looks the tag up online first, then writes posts or comments from what it finds.</p>
+<p class="sub">The site checks the latest news on your tag first, then writes posts or comments from today's headlines.</p>
 
 <div class="composer">
 <label class="big" for="q">Hashtag or tagline</label>
@@ -87,6 +89,12 @@ button:focus-visible,select:focus-visible,input[type=number]:focus-visible,.chip
 <option value="mix">Mixed</option><option value="hype">Hype</option><option value="fun">Funny</option><option value="info">Informative</option><option value="chill">Chill</option>
 </select></div>
 </div>
+<div class="row">
+<div class="field grow"><label for="kw"><span>News keyword (optional)</span></label>
+<input id="kw" class="kw" type="text" maxlength="80" autocomplete="off"></div>
+<div class="field"><label for="region"><span>News region</span></label>
+<select id="region"><option value="IN">India</option><option value="US">United States</option><option value="GB">United Kingdom</option></select></div>
+</div>
 <div class="chips" aria-label="Quick counts" id="chips"></div>
 
 <div class="checks">
@@ -94,7 +102,7 @@ button:focus-visible,select:focus-visible,input[type=number]:focus-visible,.chip
 <label><input type="checkbox" id="ht" checked> Add hashtag to taglines</label>
 </div>
 
-<button class="go" id="go" type="button">Research and generate</button>
+<button class="go" id="go" type="button">Get latest news and generate</button>
 <div id="status" role="status" aria-live="polite"></div>
 
 <section class="intel" id="intel" hidden aria-label="What was found online"></section>
@@ -104,7 +112,7 @@ button:focus-visible,select:focus-visible,input[type=number]:focus-visible,.chip
 <button class="ghost" id="again" type="button">Regenerate</button>
 </div>
 <ul id="list"></ul>
-<p class="note">Facts come from Wikipedia and Hacker News search results, so check them before you post. This page only writes text. Copy what you like and post it yourself; automated mass posting can break X's rules and get accounts limited.</p>
+<p class="note">Headlines come from Google News through free relay services, so they can occasionally fail or lag. Check them before you post. This page only writes text. Copy what you like and post it yourself; automated mass posting can break X's rules and get accounts limited.</p>
 </main>
 
 <script>
@@ -136,33 +144,71 @@ chill:{o:["Nice.","Love that.","Good one.","Agreed.","Totally get it.","Sweet."]
 b:["{t} is a good one.","{t} is a nice thing to see today.","I like what {t} stands for.","{t} is a solid choice.","Glad {t} came up.","{t} brought a smile to my face."],
 c:["Thanks for sharing.","Have a great day.","Appreciate it.","Good vibes.","Keep going.","Well done."]}}};
 var FP={hype:["Did you know?","Here's a fact worth shouting about:","Fresh fact:"],fun:["Fun fact:","Today I learned:","Not to flex, but:"],info:["Background:","Key fact:","For context:"],chill:["Something I learned:","Quick fact:","Interesting bit:"]};
-var NP=["In the news:","Latest:","Making headlines:"];
+var NP=["In the news:","Latest:","Making headlines:","Fresh update:","Just in:","Trending now:"];
 var TONES=["hype","fun","info","chill"];
 var EM={hype:["🔥","🚀","⚡","🙌","💥","🎉"],fun:["😂","😭","🤣","👀","💀","✨"],info:["📌","📈","🧠","📊","🔎","💡"],chill:["🙂","🌿","☕","✨","🌤️","👍"]};
+var STOP={is:1,the:1,a:1,an:1,of:1,to:1,for:1,and:1,in:1,on:1,at:1,by:1,with:1,are:1,was:1,be:1};
+var R={IN:'hl=en-IN&gl=IN&ceid=IN:en',US:'hl=en-US&gl=US&ceid=US:en',GB:'hl=en-GB&gl=GB&ceid=GB:en'};
 var $=function(i){return document.getElementById(i)};
 var rand=function(n){return Math.floor(Math.random()*n)};
 var pick=function(a){return a[rand(a.length)]};
-var results=[],cache={q:null,data:null},busy=false;
+var results=[],cache={k:null,data:null},busy=false;
 
 function status(m){$('status').textContent=m}
 function words(raw){return raw.replace(/^#/,'').replace(/[_\-]+/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([A-Za-z])(\d)/g,'$1 $2').replace(/(\d)([A-Za-z])/g,'$1 $2').replace(/\s+/g,' ').trim()}
+function stripStop(raw){return words(raw).split(' ').filter(function(w){return !STOP[w.toLowerCase()]}).join(' ')}
 
-function getJSON(url){
-  var c=new AbortController(),t=setTimeout(function(){c.abort()},9000);
-  return fetch(url,{signal:c.signal}).then(function(r){clearTimeout(t);if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).catch(function(e){clearTimeout(t);throw e});
+function getText(url,ms){
+  var c=new AbortController(),t=setTimeout(function(){c.abort()},ms||9000);
+  return fetch(url,{signal:c.signal}).then(function(r){clearTimeout(t);if(!r.ok)throw new Error('HTTP '+r.status);return r.text()}).catch(function(e){clearTimeout(t);throw e});
 }
+function getJSON(url,ms){return getText(url,ms).then(function(t){return JSON.parse(t)})}
 
 function sentences(text){
   var clean=text.replace(/\s*\([^)]*\)/g,'').replace(/\s+/g,' ').trim();
   return clean.split(/(?<=[.!?])\s+(?=[A-Z0-9"])/).map(function(s){return s.trim()}).filter(function(s){return s.length>=30&&s.length<=200}).slice(0,5);
 }
 
-function research(raw){
-  var q=words(raw),qw=q.toLowerCase().split(' ').filter(function(w){return w.length>2});
+function parseXML(xml){
+  var doc=new DOMParser().parseFromString(xml,'text/xml');
+  return [].slice.call(doc.querySelectorAll('item')).map(function(it){
+    var g=function(t){var n=it.querySelector(t);return n?n.textContent:''};
+    return{title:g('title'),link:g('link'),date:g('pubDate'),source:g('source')};
+  });
+}
+function rssItems(rssUrl){
+  var enc=encodeURIComponent(rssUrl);
+  return getJSON('https://api.rss2json.com/v1/api.json?rss_url='+enc,7000).then(function(d){
+    if(!d||d.status!=='ok'||!d.items||!d.items.length)throw new Error('empty');
+    return d.items.map(function(i){return{title:i.title,link:i.link,date:i.pubDate?i.pubDate.replace(' ','T')+'Z':'',source:''}});
+  }).catch(function(){
+    return getText('https://api.allorigins.win/raw?url='+enc,7000).then(parseXML);
+  }).catch(function(){
+    return getText('https://corsproxy.io/?url='+enc,7000).then(parseXML);
+  });
+}
+function cleanItem(it){
+  var t=(it.title||'').replace(/\s+/g,' ').trim(),src=it.source||'',m=t.match(/^(.*)\s[-–—|]\s([^-–—|]{2,40})$/);
+  if(m){t=m[1].trim();if(!src)src=m[2].trim()}
+  return{title:t,url:it.link,source:src,date:it.date};
+}
+function fetchNews(q,quoted,region,days){
+  var query=(quoted?'"'+q+'"':q)+' when:'+days+'d';
+  var rss='https://news.google.com/rss/search?q='+encodeURIComponent(query)+'&'+R[region];
+  return rssItems(rss).then(function(arr){
+    var seen={},out=[];
+    arr.map(cleanItem).filter(function(n){return n.title.length>15&&n.title.length<=170})
+      .sort(function(a,b){return(new Date(b.date)||0)-(new Date(a.date)||0)})
+      .forEach(function(n){var k=n.title.toLowerCase().slice(0,40);if(seen[k])return;seen[k]=1;out.push(n)});
+    return out.slice(0,8);
+  });
+}
+
+function research(raw,kw,region){
+  var q0=words(raw),qw=q0.toLowerCase().split(' ').filter(function(w){return w.length>2});
   var rel=function(s){s=(s||'').toLowerCase();return qw.some(function(w){return s.indexOf(w)>-1})};
-  var wikiU='https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=3&prop=extracts%7Cinfo&exintro=1&explaintext=1&exsentences=5&inprop=url&format=json&origin=*';
-  var hnU='https://hn.algolia.com/api/v1/search_by_date?tags=story&hitsPerPage=15&query='+encodeURIComponent(q);
-  var wiki=getJSON(wikiU).then(function(d){
+  var wikiU='https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(q0)+'&gsrlimit=3&prop=extracts%7Cinfo&exintro=1&explaintext=1&exsentences=5&inprop=url&format=json&origin=*';
+  var wiki=getJSON(wikiU,8000).then(function(d){
     var pages=d&&d.query&&d.query.pages?Object.keys(d.query.pages).map(function(k){return d.query.pages[k]}):[];
     pages.sort(function(a,b){return a.index-b.index});
     for(var i=0;i<pages.length;i++){
@@ -173,36 +219,42 @@ function research(raw){
     }
     return null;
   }).catch(function(){return null});
-  var news=getJSON(hnU).then(function(d){
-    var seen={},out=[];
-    (d.hits||[]).forEach(function(h){
-      if(!h.title||!rel(h.title)||seen[h.title])return;seen[h.title]=1;
-      out.push({title:h.title.length>150?h.title.slice(0,147)+'…':h.title,url:h.url||('https://news.ycombinator.com/item?id='+h.objectID),date:h.created_at});
-    });
-    return out.slice(0,3);
-  }).catch(function(){return[]});
-  return Promise.all([wiki,news]).then(function(r){return{wiki:r[0],news:r[1]}});
+  return wiki.then(function(w){
+    var q,quoted;
+    if(kw){q=kw;quoted=false}else if(w){q=w.title;quoted=true}else{q=stripStop(raw);quoted=false}
+    var failed=false;
+    return fetchNews(q,quoted,region,7).catch(function(){failed=true;return[]}).then(function(n){
+      if(n.length>=3||failed)return n;
+      return fetchNews(q,quoted,region,30).then(function(n2){return n2.length>n.length?n2:n}).catch(function(){return n});
+    }).then(function(n){return{wiki:w,news:n,q:q,failed:failed,auto:!kw}});
+  });
 }
 
 function link(text,url){var a=document.createElement('a');a.href=url;a.textContent=text;a.target='_blank';a.rel='noopener noreferrer';return a}
 
 function showIntel(d){
   var el=$('intel');el.textContent='';
-  var h=document.createElement('h2');h.textContent='What was found online';el.appendChild(h);
-  if(d.wiki){
-    var p=document.createElement('p');
-    p.appendChild(document.createTextNode(d.wiki.sentences.slice(0,2).join(' ')+' '));
-    var s=document.createElement('span');s.className='small';s.appendChild(document.createTextNode('Source: '));s.appendChild(link('Wikipedia, '+d.wiki.title,d.wiki.url));
-    p.appendChild(s);el.appendChild(p);
-  }
+  var h=document.createElement('h2');h.textContent='Latest news for "'+d.q+'"';el.appendChild(h);
   if(d.news.length){
-    var t=document.createElement('p');t.className='small';t.textContent='Recent headlines (Hacker News):';el.appendChild(t);
     var ul=document.createElement('ul');
-    d.news.forEach(function(n){var li=document.createElement('li');li.appendChild(link(n.title,n.url));if(n.date){var dt=new Date(n.date);if(!isNaN(dt)){var sp=document.createElement('span');sp.className='small';sp.textContent=' ('+dt.toLocaleDateString()+')';li.appendChild(sp)}}ul.appendChild(li)});
+    d.news.forEach(function(n){
+      var li=document.createElement('li');li.appendChild(link(n.title,n.url));
+      var bits=[];if(n.source)bits.push(n.source);
+      var dt=new Date(n.date);if(n.date&&!isNaN(dt))bits.push(dt.toLocaleDateString());
+      if(bits.length){var sp=document.createElement('span');sp.className='small';sp.textContent=' ('+bits.join(', ')+')';li.appendChild(sp)}
+      ul.appendChild(li);
+    });
     el.appendChild(ul);
+    if(d.auto){var tip=document.createElement('p');tip.className='small';tip.style.marginTop='8px';tip.textContent='Wrong topic? Type a more exact keyword in the News keyword box and run again.';el.appendChild(tip)}
+  }else{
+    var m=document.createElement('p');
+    m.textContent=d.failed?'The news lookup was blocked or timed out (it uses free relay services). Try again in a minute.':'No news found from the last 30 days. Try the News keyword box with the full name plus the show or event.';
+    el.appendChild(m);
   }
-  if(!d.wiki&&!d.news.length){
-    var m=document.createElement('p');m.textContent='Nothing reliable turned up online for this tag, or the lookup was blocked. The posts below use general wording, so add real details before you post.';el.appendChild(m);
+  if(d.wiki){
+    var p=document.createElement('p');p.className='small';p.style.marginTop='8px';
+    p.appendChild(document.createTextNode('Background (can be out of date): '+d.wiki.sentences[0]+' '));
+    p.appendChild(link('Wikipedia, '+d.wiki.title,d.wiki.url));el.appendChild(p);
   }
   el.hidden=false;
 }
@@ -215,13 +267,11 @@ function copyText(t){
 }
 function flash(btn,label){var old=btn.dataset.l||btn.textContent;btn.dataset.l=old;btn.textContent=label;setTimeout(function(){btn.textContent=old},1200)}
 
-function fit(parts,e,tail,fact){
-  var tries=[parts,[parts[0]].concat(parts[1]),[parts[1],parts[2]],[parts[1]]];
-  // parts: [opener, body, closer]
+function fit(parts,e,tail,isFact){
   var cands=[[parts[0],parts[1],parts[2]],[parts[1],parts[2]],[parts[0],parts[1]],[parts[1]]];
   for(var i=0;i<cands.length;i++){var t=cands[i].join(' ')+e+tail;if(t.length<=280)return t}
   var base=parts[1],room=280-e.length-tail.length-1;
-  if(fact&&base.length>room){base=base.slice(0,room-1).replace(/\s+\S*$/,'')+'…'}
+  if(isFact&&base.length>room){base=base.slice(0,Math.max(10,room-2)).replace(/\s+\S*$/,'')+'…"'}
   return(base+e+tail).slice(0,280);
 }
 
@@ -233,28 +283,36 @@ function generate(data,raw){
   if(isTag){tag='#'+raw.replace(/[^\p{L}\p{N}_]/gu,'');topic=tag}
   else{tag='#'+raw.split(/\s+/).map(function(w){w=w.replace(/[^\p{L}\p{N}]/gu,'');return w?w.charAt(0).toUpperCase()+w.slice(1):''}).join('');topic=raw}
   if(tag.length<2){status('Use letters or numbers in your hashtag or tagline.');return}
-  var pool=[];
-  if(data.wiki)data.wiki.sentences.forEach(function(s){pool.push({k:'w',t:s})});
-  data.news.forEach(function(h){pool.push({k:'n',t:'"'+h.title+'"'})});
+  var pool=[],fresh=data.news.length>0;
+  if(fresh)data.news.forEach(function(h){pool.push({k:'n',t:'"'+h.title+'"'})});
+  else if(data.wiki)data.wiki.sentences.forEach(function(s){pool.push({k:'w',t:s})});
+  var needTag=ht||isTag;
   var seen={},out=[],tries=0,factCount=0;
   while(out.length<n&&tries<n*60){
     tries++;
-    var tn=toneSel==='mix'?TONES[rand(4)]:toneSel,s=T[mode][tn],oi=rand(6),ci=rand(6),parts,key,useFact=pool.length&&Math.random()<0.75;
+    var tn=toneSel==='mix'?TONES[rand(4)]:toneSel,s=T[mode][tn],oi=rand(6),ci=rand(6),parts,key,useFact=pool.length&&Math.random()<0.85,tail;
     if(useFact){
-      var fi=rand(pool.length),pi=rand(3),f=pool[fi];
+      var fi=rand(pool.length),pi=rand(6),f=pool[fi];
       key='f'+tn+oi+fi+pi+ci;
-      parts=[s.o[oi],(f.k==='w'?FP[tn][pi]:NP[pi])+' '+f.t,s.c[ci]];
+      parts=[s.o[oi],(f.k==='n'?NP[pi]:FP[tn][pi%3])+' '+f.t,s.c[ci]];
+      tail=needTag?' '+tag:'';
     }else{
       var bi=rand(6);key='t'+tn+oi+bi+ci;
       parts=[s.o[oi],s.b[bi].replace(/\{t\}/g,topic),s.c[ci]];
+      tail=(needTag&&!isTag)?' '+tag:'';
     }
     if(seen[key])continue;seen[key]=1;
-    var e=emo?' '+pick(EM[tn]):'',tail=(ht&&!isTag)?' '+tag:'';
-    out.push(fit(parts,e,tail,useFact));
+    var e=emo?' '+pick(EM[tn]):'';
+    var txt=fit(parts,e,tail,useFact);
+    if(needTag&&txt.indexOf(tag)<0){txt=fit(parts,e,' '+tag,useFact)}
+    out.push(txt);
     if(useFact)factCount++;
   }
   results=out;render();
-  var msg='Made '+out.length+' '+mode+(factCount?', '+factCount+' built on facts found online.':'.');
+  var msg='Made '+out.length+' '+mode;
+  if(fresh)msg+=', '+factCount+' built on recent headlines.';
+  else if(data.wiki)msg+='. No recent news was found, so facts come from Wikipedia and may be old.';
+  else msg+='. No online details found, so the wording is general.';
   if(out.length<n)msg+=' That is the most unique ones this tone can give; try Mixed for more.';
   status(msg);
 }
@@ -274,14 +332,15 @@ function render(){
 
 function run(force){
   if(busy)return;
-  var raw=$('q').value.trim();
+  var raw=$('q').value.trim(),kw=$('kw').value.trim(),region=$('region').value;
   if(!raw){status('Enter a hashtag or tagline first.');$('q').focus();return}
-  if(!force&&cache.q===raw&&cache.data){generate(cache.data,raw);return}
-  busy=true;$('go').disabled=true;status('Searching the web for "'+words(raw)+'"…');
-  research(raw).then(function(d){
-    cache={q:raw,data:d};showIntel(d);generate(d,raw);
+  var key=raw+'|'+kw+'|'+region;
+  if(!force&&cache.k===key&&cache.data){generate(cache.data,raw);return}
+  busy=true;$('go').disabled=true;status('Getting the latest news for "'+(kw||words(raw))+'"…');
+  research(raw,kw,region).then(function(d){
+    cache={k:key,data:d};showIntel(d);generate(d,raw);
   }).catch(function(){
-    var d={wiki:null,news:[]};cache={q:raw,data:d};showIntel(d);generate(d,raw);
+    var d={wiki:null,news:[],q:kw||words(raw),failed:true,auto:!kw};cache={k:key,data:d};showIntel(d);generate(d,raw);
   }).then(function(){busy=false;$('go').disabled=false});
 }
 
