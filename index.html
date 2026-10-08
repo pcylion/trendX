@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Enter a hashtag or tagline. The site pulls the latest news first, then writes posts or comments from it.">
+<meta name="description" content="Enter a hashtag or tagline. The site pulls the latest news first, then writes posts or comments of the type you choose.">
 <title>Tag to Post: latest news on a hashtag, then posts and comments</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
@@ -27,11 +27,11 @@ a{color:var(--link)}
 .composer:focus-within{outline:3px solid var(--accent);outline-offset:3px}
 .row{display:flex;flex-wrap:wrap;gap:14px;margin:20px 0 6px;align-items:flex-end}
 .field{display:flex;flex-direction:column;gap:4px;min-width:0}
-.grow{flex:1 1 220px}
-input[type=text].kw{width:100%}
 .field>span,.legend{font-size:.85rem;color:var(--muted)}
-select,input[type=number],input[type=text].kw{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;min-height:44px}
+.grow{flex:1 1 220px}
+select,input[type=number],input.txt{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;min-height:44px}
 input[type=number]{width:96px}
+input.txt{width:100%}
 .seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}
 .seg input{position:absolute;opacity:0;pointer-events:none}
 .seg label{padding:11px 16px;cursor:pointer;min-height:44px;display:flex;align-items:center}
@@ -41,10 +41,13 @@ input[type=number]{width:96px}
 .chip,button{font:inherit;cursor:pointer;min-height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 14px}
 .chip{min-width:44px}
 .chip:hover,.ghost:hover{border-color:var(--ink)}
-button:focus-visible,select:focus-visible,input[type=number]:focus-visible,.chip:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.checks{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 18px}
+button:focus-visible,select:focus-visible,input:focus-visible,.chip:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.checks{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 8px}
 .checks label{display:flex;gap:8px;align-items:center;min-height:44px}
 .checks input{width:20px;height:20px;accent-color:var(--accent)}
+details.adv{margin:0 0 16px;color:var(--muted)}
+details.adv summary{cursor:pointer;min-height:36px;display:flex;align-items:center}
+details.adv p{margin:6px 0}
 .go{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:800;font-size:1.1rem;padding:12px 26px}
 .go:hover{filter:brightness(1.08)}
 .go:disabled{opacity:.6;cursor:progress}
@@ -52,7 +55,7 @@ button:focus-visible,select:focus-visible,input[type=number]:focus-visible,.chip
 .intel{background:var(--panel);border:1.5px solid var(--line);border-left:6px solid var(--hi);border-radius:12px;padding:14px 16px;margin:12px 0 16px}
 .intel p{margin:0 0 8px}
 .intel ul{margin:0;padding-left:20px}
-.intel li{margin-bottom:4px;overflow-wrap:anywhere}
+.intel li{margin-bottom:6px;overflow-wrap:anywhere}
 .small{font-size:.85rem;color:var(--muted)}
 .bar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 14px}
 #list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
@@ -69,7 +72,7 @@ button:focus-visible,select:focus-visible,input[type=number]:focus-visible,.chip
 <body>
 <main>
 <h1>Type a tag.<br>Get the posts.</h1>
-<p class="sub">The site checks the latest news on your tag first, then writes posts or comments from today's headlines.</p>
+<p class="sub">The site checks the latest news on your tag first, then writes posts or comments of the type you choose.</p>
 
 <div class="composer">
 <label class="big" for="q">Hashtag or tagline</label>
@@ -84,69 +87,78 @@ button:focus-visible,select:focus-visible,input[type=number]:focus-visible,.chip
 </div></div>
 <div class="field"><label for="n"><span>How many (1 to 100)</span></label>
 <input id="n" type="number" min="1" max="100" value="10" inputmode="numeric"></div>
-<div class="field"><label for="tone"><span>Tone</span></label>
-<select id="tone">
-<option value="mix">Mixed</option><option value="hype">Hype</option><option value="fun">Funny</option><option value="info">Informative</option><option value="chill">Chill</option>
+<div class="field"><label for="type"><span>Type</span></label>
+<select id="type">
+<option value="mix">Mixed</option><option value="pos">Positive</option><option value="crit">Critical</option><option value="bal">Balanced</option><option value="ask">Questioning</option>
 </select></div>
 </div>
+
 <div class="row">
 <div class="field grow"><label for="kw"><span>News keyword (optional)</span></label>
-<input id="kw" class="kw" type="text" maxlength="80" autocomplete="off"></div>
+<input id="kw" class="txt" type="text" maxlength="80" autocomplete="off"></div>
 <div class="field"><label for="region"><span>News region</span></label>
 <select id="region"><option value="IN">India</option><option value="US">United States</option><option value="GB">United Kingdom</option></select></div>
 </div>
 <div class="chips" aria-label="Quick counts" id="chips"></div>
 
 <div class="checks">
-<label><input type="checkbox" id="emo" checked> Add emojis</label>
+<label><input type="checkbox" id="emo"> Add emojis</label>
 <label><input type="checkbox" id="ht" checked> Add hashtag to taglines</label>
 </div>
+
+<details class="adv">
+<summary>Advanced: my own news relay (optional)</summary>
+<p class="small">If news keeps failing, deploy the free relay from the repo's worker.js file on Cloudflare Workers and paste its address here. It is saved on this device only.</p>
+<input id="proxy" class="txt" type="url" placeholder="Relay address" autocomplete="off">
+</details>
 
 <button class="go" id="go" type="button">Get latest news and generate</button>
 <div id="status" role="status" aria-live="polite"></div>
 
-<section class="intel" id="intel" hidden aria-label="What was found online"></section>
+<section class="intel" id="intel" hidden aria-label="Latest news"></section>
 
 <div class="bar" id="bar" hidden>
 <button class="ghost" id="all" type="button">Copy all</button>
 <button class="ghost" id="again" type="button">Regenerate</button>
 </div>
 <ul id="list"></ul>
-<p class="note">Headlines come from Google News through free relay services, so they can occasionally fail or lag. Check them before you post. This page only writes text. Copy what you like and post it yourself; automated mass posting can break X's rules and get accounts limited.</p>
+<p class="note">Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This page only writes text. Copy what you like and post it yourself; automated mass posting can break X's rules and get accounts limited. Critical posts stay civil and focus on actions and claims, not on people's character.</p>
 </main>
 
 <script>
 (function(){
 var T={posts:{
-hype:{o:["Big news.","Calling it now.","Heads up.","Okay, listen.","No one's ready for this.","Mark this day."],
-b:["{t} is a total game changer.","{t} just raised the bar.","{t} is exactly what we've been waiting for.","{t} is moving faster than anyone expected.","{t} is only getting bigger from here.","{t} deserves way more attention."],
-c:["Don't say we didn't warn you.","Be early, not late.","Join in and spread the word.","The momentum is real.","Who's with me?","Let's make it trend."]},
-fun:{o:["Me, minding my business:","Breaking: my brain has a new obsession.","Plot twist.","Not me getting hooked again.","Tell me you're into it without telling me.","Hot take incoming."],
-b:["{t} lives rent free in my head now.","{t} is the main character today.","{t} just made my whole timeline better.","I came for the memes, stayed for {t}.","{t} is unexpectedly the best thing today.","Nobody asked, but {t} is elite."],
-c:["No notes.","That's the post.","Anyway, carry on.","I said what I said.","Send help (and snacks).","Zero regrets."]},
-info:{o:["Quick take.","Here's what stands out.","Worth knowing.","A short summary.","One idea, quick read.","For context."],
-b:["{t} is gaining attention because it solves a real need.","{t} is shaping how people talk about this space.","{t} stands out for its clarity and consistency.","{t} keeps showing up in conversations for good reason.","The interest around {t} is growing steadily.","{t} gives people a simple way to get involved."],
-c:["Worth following closely.","More to come.","Share your thoughts below.","Curious what you think.","Save this for later.","Follow for updates."]},
-chill:{o:["Just a thought.","Small moment today.","Slow morning, good vibes.","Honestly,","Real talk.","Low-key,"],
-b:["{t} has been on my mind lately.","I keep coming back to {t}.","{t} feels like a good thing to share.","I'm enjoying {t} more than I expected.","{t} made my day a bit brighter.","{t} is worth a minute of your time."],
-c:["Hope your day is going well.","That's all for now.","Take care, everyone.","Have a good one.","Just sharing.","Peace."]}},
+pos:{o:["Well deserved.","Great to see.","Credit where it's due.","Worth celebrating.","A strong moment.","Impressive."],
+b:["{t} is setting a standard worth following.","{t} keeps delivering and the support shows.","{t} has earned this attention.","{t} is proving the doubters wrong.","{t} brings real energy to the conversation.","{t} deserves every bit of recognition."],
+c:["Proud to back this.","The momentum is well earned.","Let's keep the support going.","More to look forward to.","Wishing continued success.","Rooting for what's next."]},
+crit:{o:["Honest take.","Let's be real.","Not convinced.","A fair question.","Worth scrutinizing.","Respectfully, no."],
+b:["{t} is getting more hype than substance right now.","{t} needs to show more than headlines.","The praise for {t} feels ahead of the evidence.","{t} has yet to answer the obvious questions.","{t} has room to improve and it's fair to say so.","{t} is not above criticism."],
+c:["Details matter more than noise.","Let's see results, not slogans.","Constructive criticism is still support.","The facts will settle it.","Time will tell.","Happy to be proven wrong."]},
+bal:{o:["A balanced view.","Looking at both sides.","Here's the fuller picture.","Worth a closer look.","Quick perspective.","Stepping back for a moment."],
+b:["{t} has real strengths and real open questions.","{t} divides opinion for understandable reasons.","There is a case for and against {t}.","{t} is drawing strong reactions on both sides.","{t} is worth judging on facts, not noise.","{t} looks different depending on where you stand."],
+c:["Judge by the facts.","Both views deserve a hearing.","Let's keep the discussion civil.","Where do you land?","More context will help.","Time will give a clearer view."]},
+ask:{o:["Question for everyone.","Genuinely curious.","Let's discuss.","Honest question.","Something to think about.","Open floor."],
+b:["What do you make of {t} right now?","Is {t} getting the credit it deserves?","Where does {t} go from here?","Is the buzz around {t} justified?","What would change your mind about {t}?","Why is {t} drawing this much attention?"],
+c:["Share your view below.","Reply with your take.","Curious to hear every side.","Tell me where you stand.","Let's hear it.","Looking forward to your answers."]}},
 comments:{
-hype:{o:["Yes!","Love this!","This is huge!","Absolutely!","Incredible!","Let's go!"],
-b:["{t} is exactly what we needed.","{t} keeps getting better.","Totally behind {t}.","{t} is the real deal.","So glad to see {t} get the spotlight.","Everyone should know about {t}."],
-c:["Keep it coming!","Big support from here.","Can't wait to see more.","You nailed it.","Sharing this right now.","Count me in."]},
-fun:{o:["Okay, this got me.","Lol, same.","Not you saying it first.","I'm screaming.","Honestly iconic.","Stop, I love this."],
-b:["{t} wins again.","{t} really said \"watch this.\"","I'm fully on the {t} train.","{t} understood the assignment.","{t} living up to the hype, apparently.","My day is better because of {t}."],
-c:["10/10.","Take my like.","Respectfully, yes.","More of this please.","I'll be back for more.","Instant follow."]},
-info:{o:["Good point.","Thanks for sharing.","Well said.","Interesting angle.","Useful take.","Appreciate this."],
-b:["{t} is a topic worth discussing.","I've been reading about {t} too.","{t} deserves a closer look.","The context around {t} really helps.","{t} raises some great questions.","Seeing {t} explained this way is helpful."],
-c:["Looking forward to more.","Would love to hear more.","Following for updates.","Bookmarked for later.","Great discussion.","Thanks again."]},
-chill:{o:["Nice.","Love that.","Good one.","Agreed.","Totally get it.","Sweet."],
-b:["{t} is a good one.","{t} is a nice thing to see today.","I like what {t} stands for.","{t} is a solid choice.","Glad {t} came up.","{t} brought a smile to my face."],
-c:["Thanks for sharing.","Have a great day.","Appreciate it.","Good vibes.","Keep going.","Well done."]}}};
-var FP={hype:["Did you know?","Here's a fact worth shouting about:","Fresh fact:"],fun:["Fun fact:","Today I learned:","Not to flex, but:"],info:["Background:","Key fact:","For context:"],chill:["Something I learned:","Quick fact:","Interesting bit:"]};
-var NP=["In the news:","Latest:","Making headlines:","Fresh update:","Just in:","Trending now:"];
-var TONES=["hype","fun","info","chill"];
-var EM={hype:["🔥","🚀","⚡","🙌","💥","🎉"],fun:["😂","😭","🤣","👀","💀","✨"],info:["📌","📈","🧠","📊","🔎","💡"],chill:["🙂","🌿","☕","✨","🌤️","👍"]};
+pos:{o:["Well said.","Completely agree.","Great point.","This is spot on.","Love to see it.","Fully behind this."],
+b:["{t} deserves the recognition.","{t} has earned the support.","Glad {t} is getting the spotlight.","{t} keeps raising the bar.","{t} is doing it right.","Proud of what {t} stands for."],
+c:["Keep going!","Wishing you all the best.","Looking forward to more.","Strong work.","Supporting this all the way.","Count me in."]},
+crit:{o:["Respectfully disagree.","I see it differently.","Not sure about this.","Fair enough.","Hard to agree here.","Let's look closer."],
+b:["{t} hasn't fully earned this praise yet.","The story around {t} feels one-sided.","{t} needs to show more consistency.","There are fair questions about {t}.","The hype around {t} is running ahead of the facts.","{t} deserves honest scrutiny, not just applause."],
+c:["Just my view.","Open to being convinced.","Facts over hype.","Happy to discuss.","Curious what others think.","We'll see how it plays out."]},
+bal:{o:["Fair point.","Good perspective.","Interesting take.","Both sides have a case.","Thanks for the context.","Reasonable view."],
+b:["{t} is worth judging on the facts.","{t} has fair arguments on both sides.","There's more to {t} than one angle.","{t} deserves a measured discussion.","I can see why {t} splits opinion.","More context on {t} would help."],
+c:["Appreciate the balance.","Curious to see how it develops.","Let's keep it civil.","Worth following.","Thanks for sharing.","Good discussion."]},
+ask:{o:["Good question.","Curious about this.","Wondering the same.","Can someone explain?","Genuine question.","Let's dig in."],
+b:["What is driving the attention on {t}?","Is {t} really getting a fair hearing?","What happens next for {t}?","How much of the buzz around {t} is real?","What evidence backs the claims about {t}?","Who benefits most from the focus on {t}?"],
+c:["Would love a clear answer.","Thoughts, anyone?","Open to other views.","Interested in your take.","Hoping for more detail.","Let's discuss."]}}};
+var NP={pos:["Good news:","Latest:","Worth noting:","Fresh update:","Just in:","Making headlines:"],
+crit:["Reported:","On the record:","Latest, read closely:","Just in:","The headline:","Update:"],
+bal:["In the news:","Latest:","For context:","Reported:","Just in:","Update:"],
+ask:["Headline:","Latest:","Just in:","Reading this:","Reported:","Update:"]};
+var EM={pos:["👏","🙌","🌟","🔥","💪","🎉"],crit:["🤔","🧐","📉","⚖️","🔍","📝"],bal:["⚖️","🧭","📊","💬","🔎","🤝"],ask:["🤔","❓","💭","🗣️","🔎","📣"]};
+var ST=["pos","crit","bal","ask"];
 var STOP={is:1,the:1,a:1,an:1,of:1,to:1,for:1,and:1,in:1,on:1,at:1,by:1,with:1,are:1,was:1,be:1};
 var R={IN:'hl=en-IN&gl=IN&ceid=IN:en',US:'hl=en-US&gl=US&ceid=US:en',GB:'hl=en-GB&gl=GB&ceid=GB:en'};
 var $=function(i){return document.getElementById(i)};
@@ -157,12 +169,20 @@ var results=[],cache={k:null,data:null},busy=false;
 function status(m){$('status').textContent=m}
 function words(raw){return raw.replace(/^#/,'').replace(/[_\-]+/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([A-Za-z])(\d)/g,'$1 $2').replace(/(\d)([A-Za-z])/g,'$1 $2').replace(/\s+/g,' ').trim()}
 function stripStop(raw){return words(raw).split(' ').filter(function(w){return !STOP[w.toLowerCase()]}).join(' ')}
+function proxyBase(){var v=($('proxy').value||'').trim();return v?v.replace(/\/+$/,''):''}
 
 function getText(url,ms){
   var c=new AbortController(),t=setTimeout(function(){c.abort()},ms||9000);
   return fetch(url,{signal:c.signal}).then(function(r){clearTimeout(t);if(!r.ok)throw new Error('HTTP '+r.status);return r.text()}).catch(function(e){clearTimeout(t);throw e});
 }
 function getJSON(url,ms){return getText(url,ms).then(function(t){return JSON.parse(t)})}
+function firstOK(ps){
+  return new Promise(function(res,rej){
+    var n=ps.length,bad=0;
+    if(!n)return rej(new Error('none'));
+    ps.forEach(function(p){p.then(res,function(){if(++bad===n)rej(new Error('all failed'))})});
+  });
+}
 
 function sentences(text){
   var clean=text.replace(/\s*\([^)]*\)/g,'').replace(/\s+/g,' ').trim();
@@ -171,36 +191,60 @@ function sentences(text){
 
 function parseXML(xml){
   var doc=new DOMParser().parseFromString(xml,'text/xml');
-  return [].slice.call(doc.querySelectorAll('item')).map(function(it){
+  var items=[].slice.call(doc.querySelectorAll('item')).map(function(it){
     var g=function(t){var n=it.querySelector(t);return n?n.textContent:''};
     return{title:g('title'),link:g('link'),date:g('pubDate'),source:g('source')};
   });
+  if(!items.length)throw new Error('empty');
+  return items;
 }
-function rssItems(rssUrl){
-  var enc=encodeURIComponent(rssUrl);
-  return getJSON('https://api.rss2json.com/v1/api.json?rss_url='+enc,7000).then(function(d){
-    if(!d||d.status!=='ok'||!d.items||!d.items.length)throw new Error('empty');
-    return d.items.map(function(i){return{title:i.title,link:i.link,date:i.pubDate?i.pubDate.replace(' ','T')+'Z':'',source:''}});
-  }).catch(function(){
-    return getText('https://api.allorigins.win/raw?url='+enc,7000).then(parseXML);
-  }).catch(function(){
-    return getText('https://corsproxy.io/?url='+enc,7000).then(parseXML);
-  });
+function fromRss2json(d){
+  if(!d||d.status!=='ok'||!d.items||!d.items.length)throw new Error('empty');
+  return d.items.map(function(i){return{title:i.title,link:i.link,date:i.pubDate?i.pubDate.replace(' ','T')+'Z':'',source:''}});
 }
+function viaRelays(url){
+  var enc=encodeURIComponent(url),ps=[],base=proxyBase();
+  if(base)ps.push(getText(base+'/?url='+enc,9000).then(parseXML));
+  ps.push(getText('https://api.allorigins.win/raw?url='+enc,8000).then(parseXML));
+  ps.push(getText('https://api.codetabs.com/v1/proxy/?quest='+enc,8000).then(parseXML));
+  ps.push(getText('https://corsproxy.io/?url='+enc,8000).then(parseXML));
+  ps.push(getJSON('https://api.rss2json.com/v1/api.json?rss_url='+enc,8000).then(fromRss2json));
+  return firstOK(ps);
+}
+function gdeltDate(s){var m=/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/.exec(s||'');return m?m[1]+'-'+m[2]+'-'+m[3]+'T'+m[4]+':'+m[5]+':'+m[6]+'Z':''}
+function viaGdelt(q,quoted,days){
+  var u='https://api.gdeltproject.org/api/v2/doc/doc?query='+encodeURIComponent((quoted?'"'+q+'"':q)+' sourcelang:english')+'&mode=artlist&maxrecords=25&format=json&sort=datedesc&timespan='+days+'d';
+  var conv=function(d){
+    if(!d||!d.articles||!d.articles.length)throw new Error('empty');
+    return d.articles.map(function(a){return{title:a.title,link:a.url,date:gdeltDate(a.seendate),source:a.domain||''}});
+  };
+  var ps=[getJSON(u,9000).then(conv)],base=proxyBase();
+  if(base)ps.push(getText(base+'/?url='+encodeURIComponent(u),9000).then(function(t){return conv(JSON.parse(t))}));
+  return firstOK(ps);
+}
+
 function cleanItem(it){
   var t=(it.title||'').replace(/\s+/g,' ').trim(),src=it.source||'',m=t.match(/^(.*)\s[-–—|]\s([^-–—|]{2,40})$/);
   if(m){t=m[1].trim();if(!src)src=m[2].trim()}
-  return{title:t,url:it.link,source:src,date:it.date};
+  return{title:t,url:it.link,source:src,date:it.date,ts:new Date(it.date).getTime()};
 }
+
 function fetchNews(q,quoted,region,days){
-  var query=(quoted?'"'+q+'"':q)+' when:'+days+'d';
-  var rss='https://news.google.com/rss/search?q='+encodeURIComponent(query)+'&'+R[region];
-  return rssItems(rss).then(function(arr){
-    var seen={},out=[];
-    arr.map(cleanItem).filter(function(n){return n.title.length>15&&n.title.length<=170})
-      .sort(function(a,b){return(new Date(b.date)||0)-(new Date(a.date)||0)})
-      .forEach(function(n){var k=n.title.toLowerCase().slice(0,40);if(seen[k])return;seen[k]=1;out.push(n)});
-    return out.slice(0,8);
+  var qq=quoted?'"'+q+'"':q;
+  var g='https://news.google.com/rss/search?q='+encodeURIComponent(qq+' when:'+days+'d')+'&'+R[region];
+  var b='https://www.bing.com/news/search?q='+encodeURIComponent(qq)+'&format=rss&cc='+region+'&setlang=en';
+  var ok=0,wrap=function(p){return p.then(function(a){ok++;return a},function(){return[]})};
+  return Promise.all([wrap(viaRelays(g)),wrap(viaRelays(b)),wrap(viaGdelt(q,quoted,days))]).then(function(r){
+    var cutoff=Date.now()-days*86400000,seen={},all=[];
+    r.forEach(function(a){all=all.concat(a)});
+    var keys=words(q).toLowerCase().split(' ').filter(function(w){return w.length>2&&!STOP[w]});
+    var items=all.map(cleanItem).filter(function(n){return n.title.length>15&&n.title.length<=170&&n.ts&&n.ts>=cutoff&&n.ts<=Date.now()+3600000});
+    var rel=items.filter(function(n){var t=n.title.toLowerCase();return keys.some(function(k){return t.indexOf(k)>-1})});
+    if(rel.length>=3)items=rel;
+    items.sort(function(a,b){return b.ts-a.ts});
+    var out=[];
+    items.forEach(function(n){var k=n.title.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,80);if(seen[k])return;seen[k]=1;out.push(n)});
+    return{items:out.slice(0,8),ok:ok>0};
   });
 }
 
@@ -222,14 +266,19 @@ function research(raw,kw,region){
   return wiki.then(function(w){
     var q,quoted;
     if(kw){q=kw;quoted=false}else if(w){q=w.title;quoted=true}else{q=stripStop(raw);quoted=false}
-    var failed=false;
-    return fetchNews(q,quoted,region,7).catch(function(){failed=true;return[]}).then(function(n){
-      if(n.length>=3||failed)return n;
-      return fetchNews(q,quoted,region,30).then(function(n2){return n2.length>n.length?n2:n}).catch(function(){return n});
-    }).then(function(n){return{wiki:w,news:n,q:q,failed:failed,auto:!kw}});
+    return fetchNews(q,quoted,region,7).then(function(a){
+      if(a.items.length>=4)return a;
+      return fetchNews(q,quoted,region,30).then(function(b){return b.items.length>a.items.length?b:{items:a.items,ok:a.ok||b.ok}});
+    }).then(function(a){return{wiki:w,news:a.items,q:q,ok:a.ok,auto:!kw}});
   });
 }
 
+function ago(ts){
+  var m=Math.max(0,Math.round((Date.now()-ts)/60000));
+  if(m<1)return'just now';if(m<60)return m+' min ago';
+  var h=Math.round(m/60);if(h<24)return h+' h ago';
+  return Math.round(h/24)+' d ago';
+}
 function link(text,url){var a=document.createElement('a');a.href=url;a.textContent=text;a.target='_blank';a.rel='noopener noreferrer';return a}
 
 function showIntel(d){
@@ -239,21 +288,20 @@ function showIntel(d){
     var ul=document.createElement('ul');
     d.news.forEach(function(n){
       var li=document.createElement('li');li.appendChild(link(n.title,n.url));
-      var bits=[];if(n.source)bits.push(n.source);
-      var dt=new Date(n.date);if(n.date&&!isNaN(dt))bits.push(dt.toLocaleDateString());
-      if(bits.length){var sp=document.createElement('span');sp.className='small';sp.textContent=' ('+bits.join(', ')+')';li.appendChild(sp)}
+      var bits=[];if(n.source)bits.push(n.source);bits.push(ago(n.ts));
+      var sp=document.createElement('span');sp.className='small';sp.textContent=' ('+bits.join(', ')+')';li.appendChild(sp);
       ul.appendChild(li);
     });
     el.appendChild(ul);
     if(d.auto){var tip=document.createElement('p');tip.className='small';tip.style.marginTop='8px';tip.textContent='Wrong topic? Type a more exact keyword in the News keyword box and run again.';el.appendChild(tip)}
   }else{
     var m=document.createElement('p');
-    m.textContent=d.failed?'The news lookup was blocked or timed out (it uses free relay services). Try again in a minute.':'No news found from the last 30 days. Try the News keyword box with the full name plus the show or event.';
+    m.textContent=d.ok?'No news from the last 30 days matched this search. Try the News keyword box with the full name plus the show or event.':'No recent news came back. Either there is none for this search, or the free news relays were blocked. Try again in a minute, use the News keyword box, or add your own relay under Advanced.';
     el.appendChild(m);
   }
   if(d.wiki){
     var p=document.createElement('p');p.className='small';p.style.marginTop='8px';
-    p.appendChild(document.createTextNode('Background (can be out of date): '+d.wiki.sentences[0]+' '));
+    p.appendChild(document.createTextNode('Background only (can be out of date): '+d.wiki.sentences[0]+' '));
     p.appendChild(link('Wikipedia, '+d.wiki.title,d.wiki.url));el.appendChild(p);
   }
   el.hidden=false;
@@ -271,49 +319,45 @@ function fit(parts,e,tail,isFact){
   var cands=[[parts[0],parts[1],parts[2]],[parts[1],parts[2]],[parts[0],parts[1]],[parts[1]]];
   for(var i=0;i<cands.length;i++){var t=cands[i].join(' ')+e+tail;if(t.length<=280)return t}
   var base=parts[1],room=280-e.length-tail.length-1;
-  if(isFact&&base.length>room){base=base.slice(0,Math.max(10,room-2)).replace(/\s+\S*$/,'')+'…"'}
+  if(isFact&&base.length>room){base=base.slice(0,Math.max(10,room-1)).replace(/\s+\S*$/,'')+'…'}
   return(base+e+tail).slice(0,280);
 }
 
 function generate(data,raw){
   var n=Math.max(1,Math.min(100,parseInt($('n').value,10)||10));$('n').value=n;
   var mode=document.querySelector('input[name=mode]:checked').value;
-  var toneSel=$('tone').value,emo=$('emo').checked,ht=$('ht').checked;
+  var sel=$('type').value,emo=$('emo').checked,ht=$('ht').checked;
   var isTag=raw.charAt(0)==='#',tag,topic;
   if(isTag){tag='#'+raw.replace(/[^\p{L}\p{N}_]/gu,'');topic=tag}
   else{tag='#'+raw.split(/\s+/).map(function(w){w=w.replace(/[^\p{L}\p{N}]/gu,'');return w?w.charAt(0).toUpperCase()+w.slice(1):''}).join('');topic=raw}
   if(tag.length<2){status('Use letters or numbers in your hashtag or tagline.');return}
-  var pool=[],fresh=data.news.length>0;
-  if(fresh)data.news.forEach(function(h){pool.push({k:'n',t:'"'+h.title+'"'})});
-  else if(data.wiki)data.wiki.sentences.forEach(function(s){pool.push({k:'w',t:s})});
-  var needTag=ht||isTag;
+  var pool=data.news.map(function(h){return'"'+h.title+'"'+(h.source?' ('+h.source+')':'')});
+  var fresh=pool.length>0,needTag=ht||isTag;
   var seen={},out=[],tries=0,factCount=0;
   while(out.length<n&&tries<n*60){
     tries++;
-    var tn=toneSel==='mix'?TONES[rand(4)]:toneSel,s=T[mode][tn],oi=rand(6),ci=rand(6),parts,key,useFact=pool.length&&Math.random()<0.85,tail;
+    var sn=sel==='mix'?ST[rand(4)]:sel,s=T[mode][sn],oi=rand(6),ci=rand(6),parts,key,useFact=fresh&&Math.random()<0.85,tail;
     if(useFact){
-      var fi=rand(pool.length),pi=rand(6),f=pool[fi];
-      key='f'+tn+oi+fi+pi+ci;
-      parts=[s.o[oi],(f.k==='n'?NP[pi]:FP[tn][pi%3])+' '+f.t,s.c[ci]];
+      var fi=rand(pool.length),pi=rand(6);
+      key='f'+sn+oi+fi+pi+ci;
+      parts=[s.o[oi],NP[sn][pi]+' '+pool[fi],s.c[ci]];
       tail=needTag?' '+tag:'';
     }else{
-      var bi=rand(6);key='t'+tn+oi+bi+ci;
+      var bi=rand(6);key='t'+sn+oi+bi+ci;
       parts=[s.o[oi],s.b[bi].replace(/\{t\}/g,topic),s.c[ci]];
       tail=(needTag&&!isTag)?' '+tag:'';
     }
     if(seen[key])continue;seen[key]=1;
-    var e=emo?' '+pick(EM[tn]):'';
+    var e=emo?' '+pick(EM[sn]):'';
     var txt=fit(parts,e,tail,useFact);
-    if(needTag&&txt.indexOf(tag)<0){txt=fit(parts,e,' '+tag,useFact)}
+    if(needTag&&txt.indexOf(tag)<0)txt=fit(parts,e,' '+tag,useFact);
     out.push(txt);
     if(useFact)factCount++;
   }
   results=out;render();
   var msg='Made '+out.length+' '+mode;
-  if(fresh)msg+=', '+factCount+' built on recent headlines.';
-  else if(data.wiki)msg+='. No recent news was found, so facts come from Wikipedia and may be old.';
-  else msg+='. No online details found, so the wording is general.';
-  if(out.length<n)msg+=' That is the most unique ones this tone can give; try Mixed for more.';
+  msg+=fresh?', '+factCount+' built on the latest headlines.':'. No recent news was found, so the wording is general.';
+  if(out.length<n)msg+=' That is the most unique ones this setting can give; try Mixed for more.';
   status(msg);
 }
 
@@ -332,15 +376,15 @@ function render(){
 
 function run(force){
   if(busy)return;
-  var raw=$('q').value.trim(),kw=$('kw').value.trim(),region=$('region').value;
+  var raw=$('q').value.trim(),kw=$('kw').value.trim().replace(/([a-z])([A-Z])/g,'$1 $2'),region=$('region').value;
   if(!raw){status('Enter a hashtag or tagline first.');$('q').focus();return}
-  var key=raw+'|'+kw+'|'+region;
+  var key=raw+'|'+kw+'|'+region+'|'+proxyBase();
   if(!force&&cache.k===key&&cache.data){generate(cache.data,raw);return}
-  busy=true;$('go').disabled=true;status('Getting the latest news for "'+(kw||words(raw))+'"…');
+  busy=true;$('go').disabled=true;status('Searching the latest news for "'+(kw||words(raw))+'"…');
   research(raw,kw,region).then(function(d){
     cache={k:key,data:d};showIntel(d);generate(d,raw);
   }).catch(function(){
-    var d={wiki:null,news:[],q:kw||words(raw),failed:true,auto:!kw};cache={k:key,data:d};showIntel(d);generate(d,raw);
+    var d={wiki:null,news:[],q:kw||words(raw),ok:false,auto:!kw};cache={k:key,data:d};showIntel(d);generate(d,raw);
   }).then(function(){busy=false;$('go').disabled=false});
 }
 
@@ -348,6 +392,8 @@ function run(force){
   var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=v;
   b.addEventListener('click',function(){$('n').value=v});$('chips').appendChild(b);
 });
+try{var sp=localStorage.getItem('trendx_relay');if(sp)$('proxy').value=sp}catch(e){}
+$('proxy').addEventListener('change',function(){try{localStorage.setItem('trendx_relay',$('proxy').value.trim())}catch(e){}});
 $('go').addEventListener('click',function(){run(true)});
 $('again').addEventListener('click',function(){run(false)});
 $('q').addEventListener('keydown',function(e){if(e.key==='Enter')run(true)});
