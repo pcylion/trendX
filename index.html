@@ -72,7 +72,7 @@ details.adv p{margin:6px 0}
 <body>
 <main>
 <h1>Type a tag.<br>Get the posts.</h1>
-<p class="sub">The site checks the latest news on your tag first, then writes posts or comments of the type you choose.</p>
+<p class="sub">The site checks the latest news on your tag first, then writes natural, human-sounding posts or comments of the type you choose.</p>
 
 <div class="composer">
 <label class="big" for="q">Hashtag or tagline</label>
@@ -122,41 +122,34 @@ details.adv p{margin:6px 0}
 <button class="ghost" id="again" type="button">Regenerate</button>
 </div>
 <ul id="list"></ul>
-<p class="note">Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This page only writes text. Copy what you like and post it yourself; automated mass posting can break X's rules and get accounts limited. Critical posts stay civil and focus on actions and claims, not on people's character.</p>
+<p class="note">Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This page only writes text. Copy what you like and post it yourself; automated mass posting can break X's rules and get accounts limited. Critical lines stay civil and focus on the game and the claims, not on anyone's character.</p>
 </main>
 
 <script>
 (function(){
-var T={posts:{
-pos:{o:["Well deserved.","Great to see.","Credit where it's due.","Worth celebrating.","A strong moment.","Impressive."],
-b:["{t} is setting a standard worth following.","{t} keeps delivering and the support shows.","{t} has earned this attention.","{t} is proving the doubters wrong.","{t} brings real energy to the conversation.","{t} deserves every bit of recognition."],
-c:["Proud to back this.","The momentum is well earned.","Let's keep the support going.","More to look forward to.","Wishing continued success.","Rooting for what's next."]},
-crit:{o:["Honest take.","Let's be real.","Not convinced.","A fair question.","Worth scrutinizing.","Respectfully, no."],
-b:["{t} is getting more hype than substance right now.","{t} needs to show more than headlines.","The praise for {t} feels ahead of the evidence.","{t} has yet to answer the obvious questions.","{t} has room to improve and it's fair to say so.","{t} is not above criticism."],
-c:["Details matter more than noise.","Let's see results, not slogans.","Constructive criticism is still support.","The facts will settle it.","Time will tell.","Happy to be proven wrong."]},
-bal:{o:["A balanced view.","Looking at both sides.","Here's the fuller picture.","Worth a closer look.","Quick perspective.","Stepping back for a moment."],
-b:["{t} has real strengths and real open questions.","{t} divides opinion for understandable reasons.","There is a case for and against {t}.","{t} is drawing strong reactions on both sides.","{t} is worth judging on facts, not noise.","{t} looks different depending on where you stand."],
-c:["Judge by the facts.","Both views deserve a hearing.","Let's keep the discussion civil.","Where do you land?","More context will help.","Time will give a clearer view."]},
-ask:{o:["Question for everyone.","Genuinely curious.","Let's discuss.","Honest question.","Something to think about.","Open floor."],
-b:["What do you make of {t} right now?","Is {t} getting the credit it deserves?","Where does {t} go from here?","Is the buzz around {t} justified?","What would change your mind about {t}?","Why is {t} drawing this much attention?"],
-c:["Share your view below.","Reply with your take.","Curious to hear every side.","Tell me where you stand.","Let's hear it.","Looking forward to your answers."]}},
-comments:{
-pos:{o:["Well said.","Completely agree.","Great point.","This is spot on.","Love to see it.","Fully behind this."],
-b:["{t} deserves the recognition.","{t} has earned the support.","Glad {t} is getting the spotlight.","{t} keeps raising the bar.","{t} is doing it right.","Proud of what {t} stands for."],
-c:["Keep going!","Wishing you all the best.","Looking forward to more.","Strong work.","Supporting this all the way.","Count me in."]},
-crit:{o:["Respectfully disagree.","I see it differently.","Not sure about this.","Fair enough.","Hard to agree here.","Let's look closer."],
-b:["{t} hasn't fully earned this praise yet.","The story around {t} feels one-sided.","{t} needs to show more consistency.","There are fair questions about {t}.","The hype around {t} is running ahead of the facts.","{t} deserves honest scrutiny, not just applause."],
-c:["Just my view.","Open to being convinced.","Facts over hype.","Happy to discuss.","Curious what others think.","We'll see how it plays out."]},
-bal:{o:["Fair point.","Good perspective.","Interesting take.","Both sides have a case.","Thanks for the context.","Reasonable view."],
-b:["{t} is worth judging on the facts.","{t} has fair arguments on both sides.","There's more to {t} than one angle.","{t} deserves a measured discussion.","I can see why {t} splits opinion.","More context on {t} would help."],
-c:["Appreciate the balance.","Curious to see how it develops.","Let's keep it civil.","Worth following.","Thanks for sharing.","Good discussion."]},
-ask:{o:["Good question.","Curious about this.","Wondering the same.","Can someone explain?","Genuine question.","Let's dig in."],
-b:["What is driving the attention on {t}?","Is {t} really getting a fair hearing?","What happens next for {t}?","How much of the buzz around {t} is real?","What evidence backs the claims about {t}?","Who benefits most from the focus on {t}?"],
-c:["Would love a clear answer.","Thoughts, anyone?","Open to other views.","Interested in your take.","Hoping for more detail.","Let's discuss."]}}};
-var NP={pos:["Good news:","Latest:","Worth noting:","Fresh update:","Just in:","Making headlines:"],
-crit:["Reported:","On the record:","Latest, read closely:","Just in:","The headline:","Update:"],
-bal:["In the news:","Latest:","For context:","Reported:","Just in:","Update:"],
-ask:["Headline:","Latest:","Just in:","Reading this:","Reported:","Update:"]};
+var C={
+pos:["{n} is the boss!","Always rooting for {n}!","{n} never disappoints!","The real boss is here!","{n} has unmatched energy!","Simply the best!","{n} deserves all the love!","What a legend!","Keep shining, {n}!","{n} rocks!","Always amazing, {n}!","Respect for {n}!","Nobody does it like {n}!","{n} brings the fire!","Forever supporting {n}!","Boss of the game!","{n} all the way!","Proud {n} fan!","The one and only {n}!","{n} for the win!","Absolute legend!","{n} has got it all!","True boss energy!","{n} is simply iconic!","{n}'s presence is unmatched!","{n} is a whole mood!","Can't get enough of {n}!","Winning hearts every single day, that's {n}!","Big love for {n}!","{n} is on another level!","{n} always delivers!","You just can't ignore {n}!","Team {n} forever!","{n} makes it look so easy!","Pure class from {n}!","{n} is unstoppable right now!","This is {n}'s time to shine!","Only {n} can pull this off!","Fans are with you, {n}!","{s}!","{s}, no doubt!","Say it with me: {s}!","{s}, always!"],
+crit:["Not sure {n} deserves all this hype, to be honest.","{n} needs to bring more to the table.","Mixed feelings about {n}'s game this week.","Lots of hype, but I haven't seen much from {n} yet.","{n} can do better, that's all I'll say.","I'll wait to see what {n} does next before praising.","{n} isn't playing as smart as people say.","Too much noise around {n}, not enough substance.","{n} still has a lot to prove.","{n} had a few good moments, but consistency is missing.","Not every move by {n} deserves applause.","Love the energy, but {n} needs a clearer strategy.","I expected more from {n} this week.","The fans are loud, but {n} needs more than that."],
+bal:["{n} has good moments and some not-so-good ones. Let's see how it goes.","Both sides have a point about {n}.","{n} is doing well, but there's room to grow.","Interesting game from {n}, let's wait and watch.","Some love {n}, some don't, and that's what makes it fun.","Fair game so far, {n} has earned a spot in the conversation.","Strong start for {n}, now consistency matters.","Not a fan, not a hater, just watching {n}'s journey.","{n} is a mixed bag this week, but I'm curious what's next.","Credit where it's due to {n}, but let's not ignore the flaws.","{n} is getting a lot of attention, let's see if it lasts.","A fair take: {n} is good, not perfect."],
+ask:["Is {n} playing a smart game or just getting lucky?","What do you all think about {n} this week?","Can {n} keep this momentum going?","Who else thinks {n} is going all the way?","Why is everyone talking about {n} right now?","Is {n} getting enough credit?","What was {n}'s best moment so far?","Is {n} overrated or underrated?","Thoughts on {n}'s latest move?","Can anyone explain the hype around {n}?","Is {n} your pick too?","What's next for {n}?"]};
+var CP={
+pos:["Say what you want, {n} keeps winning hearts one moment at a time.","{n} keeps proving why the support is so strong.","Every day {n} gives people one more reason to cheer.","You can feel the love for {n} growing everywhere.","The way {n} handles everything is truly inspiring.","If you're not backing {n} yet, now's the time."],
+crit:["Unpopular opinion: {n} is getting more credit than the game shows.","Praise is easy, results are harder. {n} still has to deliver.","Being popular isn't the same as playing well, and {n} should remember that."],
+bal:["The conversation around {n} has two sides, and both have a case.","{n} has had highs and lows. Judge the whole picture, not one moment.","Whether you love or doubt {n}, the next few days will say a lot."],
+ask:["Honest question for everyone: where do you stand on {n}?","Be honest, is {n} the one to beat right now?","Everyone has a take on {n}. What's yours?"]};
+var EV={
+nominat:{label:"nominations",pos:["Nominations can't shake {n}!","Nominated or not, {n} is the one to beat!","Everyone needs to back {n} this week!"],crit:["Nominations show {n} still has work to do.","{n} needs to earn the votes, not just expect them."],bal:["Nominations are tough on everyone. Let's see how {n} handles it.","{n} is in the spotlight with nominations, for better or worse."],ask:["Will {n} get through the nominations?","Is {n} safe this week?"]},
+weekend:{label:"Weekend Ka Vaar",pos:["Weekend Ka Vaar was all about {n} and we loved it!","{n} stood tall on Weekend Ka Vaar!"],crit:["Weekend Ka Vaar exposed a few things about {n}'s game.","{n} could have handled Weekend Ka Vaar better."],bal:["Weekend Ka Vaar showed both sides of {n}.","A mixed Weekend Ka Vaar for {n}, but it made things interesting."],ask:["How did you find {n} on Weekend Ka Vaar?","Did {n} do enough on Weekend Ka Vaar?"]},
+health:{label:"health updates",pos:["Get well soon, {n}! We're all with you.","Take care, {n}! Your fans are here for you."],crit:[],bal:["Health comes first. Hope {n} recovers soon.","Wishing {n} a speedy recovery, whatever else is going on."],ask:["Hope {n} is feeling better. Any updates?","Is {n} doing okay now?"]},
+fight:{label:"the drama",pos:["Drama or not, {n} stays classy!","People can say what they want, {n} keeps winning hearts!"],crit:["{n} needs to be more careful in moments like these.","The controversy around {n} is hard to ignore."],bal:["There are two sides to every clash. Wait for the full picture on {n}.","Let's not judge {n} on one clip alone."],ask:["What really happened with {n}?","Is the drama around {n} being blown out of proportion?"]},
+exit:{label:"exit rumours",pos:["Whatever the rumours say, we're with {n}!","Rumours won't stop {n}'s fans!"],crit:["Rumours around {n} are getting out of hand."],bal:["Let's wait for official news before judging {n}'s situation.","Rumours are just rumours until confirmed."],ask:["Is the {n} exit news actually true?","Any official word on {n}?"]},
+task:{label:"the task",pos:["{n} nailed that task!","Captain material right there, {n}!"],crit:["{n} didn't look sharp in that task.","The task showed {n} has things to work on."],bal:["Decent task from {n}, with a few slips.","{n} did fine in the task, nothing more, nothing less."],ask:["How would you rate {n} in the task?","Did {n} deserve to win that task?"]},
+game:{label:"gameplay",pos:["{n}'s game is only getting stronger!","Smart moves from {n} again!"],crit:["{n}'s game feels predictable lately.","{n} needs a better game plan."],bal:["{n}'s game has been up and down, but interesting.","{n} is playing it safe, for better or worse."],ask:["Is {n}'s strategy working?","What will {n}'s next move be?"]}};
+var EVRE={nominat:/nominat/,weekend:/weekend|salman|vaar/,health:/fever|unwell|\bill\b|health|hospital|sick/,fight:/controvers|fight|clash|\brow\b|mock|argument|spat|slam|roast/,exit:/\bexit|out of|evict|elimin|ousted/,task:/\btask|captain/,game:/\bgame\b|strategy|gameplay/};
+var SHOWRE=[/bigg boss(?:\s*\d+)?/i,/big boss(?:\s*\d+)?/i,/roadies/i,/khatron ke khiladi/i,/indian idol/i,/splitsvilla/i,/lock upp/i,/kaun banega crorepati|\bkbc\b/i,/\bipl\b/i,/world cup/i,/asia cup/i,/champions trophy/i];
+var SH={pos:["{n} is ruling {show}!","{show} is better with {n} in it!","Best contestant in {show}, no doubt!","{n} deserves the trophy in {show}!"],crit:["{n} hasn't done enough in {show} yet.","{show} needs more from {n}."],bal:["{n} has had ups and downs in {show}.","{show} has been interesting with {n} around."],ask:["Can {n} win {show}?","Is {n} a real contender in {show}?"]};
+var CL={pos:["Keep shining!","Proud of you, {n}.","Stay strong and keep going.","We see you and we love it.","Can't wait to see what's next.","This is just the beginning."],crit:["Just my honest opinion.","Open to being proven wrong.","Let's see how it goes.","That's all I'll say.","Facts over hype."],bal:["Let's wait and watch.","Open to both views.","Time will tell.","Let's keep it civil."],ask:["Drop your thoughts below.","Curious what you all think.","Let me know in the replies.","Thoughts?"]};
+var IJ={pos:["","","","Yes!","Honestly,","Wow,","Okay,","Seriously,","Man,"],crit:["","","","Honestly,","Respectfully,","Not gonna lie,","Unpopular opinion:","To be fair,"],bal:["","","","Honestly,","To be fair,","Just saying,","All things considered,"],ask:["","","","Okay,","Honestly,","Real question:","Genuinely curious:"]};
 var EM={pos:["👏","🙌","🌟","🔥","💪","🎉"],crit:["🤔","🧐","📉","⚖️","🔍","📝"],bal:["⚖️","🧭","📊","💬","🔎","🤝"],ask:["🤔","❓","💭","🗣️","🔎","📣"]};
 var ST=["pos","crit","bal","ask"];
 var STOP={is:1,the:1,a:1,an:1,of:1,to:1,for:1,and:1,in:1,on:1,at:1,by:1,with:1,are:1,was:1,be:1};
@@ -315,48 +308,71 @@ function copyText(t){
 }
 function flash(btn,label){var old=btn.dataset.l||btn.textContent;btn.dataset.l=old;btn.textContent=label;setTimeout(function(){btn.textContent=old},1200)}
 
-function fit(parts,e,tail,isFact){
-  var cands=[[parts[0],parts[1],parts[2]],[parts[1],parts[2]],[parts[0],parts[1]],[parts[1]]];
-  for(var i=0;i<cands.length;i++){var t=cands[i].join(' ')+e+tail;if(t.length<=280)return t}
-  var base=parts[1],room=280-e.length-tail.length-1;
-  if(isFact&&base.length>room){base=base.slice(0,Math.max(10,room-1)).replace(/\s+\S*$/,'')+'…'}
-  return(base+e+tail).slice(0,280);
+function nameFor(raw,isTag,data){
+  if(!isTag)return raw.trim();
+  var toks=words(raw).split(' ').filter(Boolean),lc=toks.map(function(x){return x.toLowerCase()});
+  var wf=data.wiki&&data.wiki.title.split(' ')[0];
+  if(wf&&lc.indexOf(wf.toLowerCase())>-1)return wf;
+  var out=[];
+  for(var i=0;i<toks.length;i++){if(STOP[lc[i]])break;out.push(toks[i])}
+  return out.length?out.join(' '):toks.join(' ');
 }
+function sloganFor(raw){
+  var toks=words(raw).split(' ').filter(Boolean);
+  return toks.map(function(t,i){return i&&STOP[t.toLowerCase()]?t.toLowerCase():t}).join(' ');
+}
+function newsContext(news){
+  var text=news.map(function(h){return h.title}).join(' || '),low=text.toLowerCase(),ev=[],show='';
+  Object.keys(EVRE).forEach(function(k){if(EVRE[k].test(low))ev.push(k)});
+  for(var i=0;i<SHOWRE.length;i++){var m=SHOWRE[i].exec(text);if(m){show=m[0].replace(/\s+/g,' ').trim();break}}
+  return{ev:ev,show:show};
+}
+function lcFirst(s){return s.charAt(0).toLowerCase()+s.slice(1)}
+function fill(s,n,sl,show){return s.replace(/\{n\}/g,n).replace(/\{s\}/g,sl).replace(/\{show\}/g,show)}
 
 function generate(data,raw){
   var n=Math.max(1,Math.min(100,parseInt($('n').value,10)||10));$('n').value=n;
   var mode=document.querySelector('input[name=mode]:checked').value;
   var sel=$('type').value,emo=$('emo').checked,ht=$('ht').checked;
-  var isTag=raw.charAt(0)==='#',tag,topic;
-  if(isTag){tag='#'+raw.replace(/[^\p{L}\p{N}_]/gu,'');topic=tag}
-  else{tag='#'+raw.split(/\s+/).map(function(w){w=w.replace(/[^\p{L}\p{N}]/gu,'');return w?w.charAt(0).toUpperCase()+w.slice(1):''}).join('');topic=raw}
+  var isTag=raw.charAt(0)==='#',tag;
+  if(isTag)tag='#'+raw.replace(/[^\p{L}\p{N}_]/gu,'');
+  else tag='#'+raw.split(/\s+/).map(function(w){w=w.replace(/[^\p{L}\p{N}]/gu,'');return w?w.charAt(0).toUpperCase()+w.slice(1):''}).join('');
   if(tag.length<2){status('Use letters or numbers in your hashtag or tagline.');return}
-  var pool=data.news.map(function(h){return'"'+h.title+'"'+(h.source?' ('+h.source+')':'')});
-  var fresh=pool.length>0,needTag=ht||isTag;
-  var seen={},out=[],tries=0,factCount=0;
-  while(out.length<n&&tries<n*60){
+  var name=nameFor(raw,isTag,data),slogan=sloganFor(raw),ctx=newsContext(data.news),needTag=ht||isTag;
+  var base={},evl={};
+  ST.forEach(function(sn){
+    var b=C[sn].slice();
+    if(sn!=='pos')b=b.filter(function(l){return l.indexOf('{s}')<0});
+    if(mode==='posts')b=b.concat(CP[sn]);
+    if(sn==='pos'&&!(slogan.split(' ').length>=3))b=b.filter(function(l){return l.indexOf('{s}')<0});
+    base[sn]=b;
+    var e=[];
+    ctx.ev.forEach(function(k){e=e.concat(EV[k][sn])});
+    if(ctx.show)e=e.concat(SH[sn]);
+    evl[sn]=e;
+  });
+  var seen={},out=[],tries=0,used=0;
+  while(out.length<n&&tries<n*80){
     tries++;
-    var sn=sel==='mix'?ST[rand(4)]:sel,s=T[mode][sn],oi=rand(6),ci=rand(6),parts,key,useFact=fresh&&Math.random()<0.85,tail;
-    if(useFact){
-      var fi=rand(pool.length),pi=rand(6);
-      key='f'+sn+oi+fi+pi+ci;
-      parts=[s.o[oi],NP[sn][pi]+' '+pool[fi],s.c[ci]];
-      tail=needTag?' '+tag:'';
-    }else{
-      var bi=rand(6);key='t'+sn+oi+bi+ci;
-      parts=[s.o[oi],s.b[bi].replace(/\{t\}/g,topic),s.c[ci]];
-      tail=(needTag&&!isTag)?' '+tag:'';
-    }
-    if(seen[key])continue;seen[key]=1;
-    var e=emo?' '+pick(EM[sn]):'';
-    var txt=fit(parts,e,tail,useFact);
-    if(needTag&&txt.indexOf(tag)<0)txt=fit(parts,e,' '+tag,useFact);
-    out.push(txt);
-    if(useFact)factCount++;
+    var sn=sel==='mix'?ST[rand(4)]:sel;
+    var useEv=evl[sn].length&&Math.random()<0.4;
+    var core=pick(useEv?evl[sn]:base[sn]);
+    var ij=pick(IJ[sn]),cl=(mode==='posts'||Math.random()<0.35)?pick(CL[sn]):'';
+    var body=fill(core,name,slogan,ctx.show);
+    if(ij&&/[,:]$/.test(ij)&&core.charAt(0)!=='{')body=lcFirst(body);
+    var txt=[ij,body,fill(cl,name,slogan,ctx.show)].filter(Boolean).join(' ');
+    if(emo)txt+=' '+pick(EM[sn]);
+    if(needTag)txt+=' '+tag;
+    if(txt.length>280||seen[txt])continue;
+    seen[txt]=1;out.push(txt);if(useEv)used++;
   }
   results=out;render();
-  var msg='Made '+out.length+' '+mode;
-  msg+=fresh?', '+factCount+' built on the latest headlines.':'. No recent news was found, so the wording is general.';
+  var msg='Made '+out.length+' '+mode+' in a natural fan voice';
+  if(data.news.length){
+    var labels=ctx.ev.map(function(k){return EV[k].label});
+    if(ctx.show)labels.push(ctx.show);
+    msg+=labels.length?'. Tied to what the news says: '+labels.join(', ')+'.':'. The latest news was checked, but nothing specific stood out, so the lines are general.';
+  }else msg+='. No recent news was found, so the lines are general.';
   if(out.length<n)msg+=' That is the most unique ones this setting can give; try Mixed for more.';
   status(msg);
 }
