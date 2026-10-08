@@ -67,6 +67,8 @@ details.adv p{margin:6px 0}
 .meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
 .count{font-size:.78rem;color:var(--muted)}
 .copy{padding:6px 14px}
+.xbtn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:6px 14px;border-radius:10px;border:1.5px solid var(--accent);background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:600;white-space:nowrap}
+.xbtn:hover{filter:brightness(1.08)}
 .note{color:var(--muted);font-size:.85rem;margin-top:28px;max-width:62ch}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:no-preference){#list li{animation:in .18s ease-out both}@keyframes in{from{opacity:0;transform:translateY(4px)}}}
@@ -125,7 +127,7 @@ details.adv p{margin:6px 0}
 <button class="ghost" id="again" type="button">Regenerate</button>
 </div>
 <ul id="list"></ul>
-<p class="note">Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This page only writes text. Copy what you like and post it yourself; automated mass posting can break X's rules and get accounts limited. Critical and negative lines stay on opinions about the game and the claims, with no insults, threats or false accusations, and they are not meant to be posted in bulk at one person.</p>
+<p class="note">Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This page only writes text. The Post on X button just opens X with the text filled in, and you press Post yourself; automated mass posting can break X's rules and get accounts limited. Critical and negative lines stay on opinions about the game and the claims, with no insults, threats or false accusations, and they are not meant to be posted in bulk at one person.</p>
 </main>
 
 <script>
@@ -429,7 +431,9 @@ function render(){
     var c=document.createElement('span');c.className='count';c.textContent=t.length+'/280';
     var b=document.createElement('button');b.type='button';b.className='copy';b.textContent='Copy';
     b.addEventListener('click',function(){copyText(t).then(function(ok){flash(b,ok?'Copied':'Copy failed')})});
-    meta.appendChild(c);meta.appendChild(b);li.appendChild(p);li.appendChild(meta);ul.appendChild(li);
+    var x=document.createElement('a');x.className='xbtn';x.textContent='Post on X';
+    x.href='https://x.com/intent/post?text='+encodeURIComponent(t);x.target='_blank';x.rel='noopener noreferrer';
+    meta.appendChild(c);meta.appendChild(b);meta.appendChild(x);li.appendChild(p);li.appendChild(meta);ul.appendChild(li);
   });
   $('bar').hidden=!results.length;
 }
