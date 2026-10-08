@@ -57,6 +57,9 @@ details.adv p{margin:6px 0}
 .intel ul{margin:0;padding-left:20px}
 .intel li{margin-bottom:6px;overflow-wrap:anywhere}
 .small{font-size:.85rem;color:var(--muted)}
+.confirm{margin-top:14px;padding-top:12px;border-top:1.5px solid var(--line)}
+.crow{display:flex;gap:10px;align-items:flex-start;min-height:44px;padding:6px 0;cursor:pointer;overflow-wrap:anywhere}
+.crow input{width:22px;height:22px;flex:none;margin-top:2px;accent-color:var(--accent)}
 .bar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 14px}
 #list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 #list li{background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
@@ -89,7 +92,7 @@ details.adv p{margin:6px 0}
 <input id="n" type="number" min="1" max="100" value="10" inputmode="numeric"></div>
 <div class="field"><label for="type"><span>Type</span></label>
 <select id="type">
-<option value="mix">Mixed</option><option value="pos">Positive</option><option value="crit">Critical</option><option value="bal">Balanced</option><option value="ask">Questioning</option>
+<option value="mix">Mixed</option><option value="pos">Positive</option><option value="crit">Critical</option><option value="neg">Negative</option><option value="bal">Balanced</option><option value="ask">Questioning</option>
 </select></div>
 </div>
 
@@ -122,7 +125,7 @@ details.adv p{margin:6px 0}
 <button class="ghost" id="again" type="button">Regenerate</button>
 </div>
 <ul id="list"></ul>
-<p class="note">Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This page only writes text. Copy what you like and post it yourself; automated mass posting can break X's rules and get accounts limited. Critical lines stay civil and focus on the game and the claims, not on anyone's character.</p>
+<p class="note">Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This page only writes text. Copy what you like and post it yourself; automated mass posting can break X's rules and get accounts limited. Critical and negative lines stay on opinions about the game and the claims, with no insults, threats or false accusations, and they are not meant to be posted in bulk at one person.</p>
 </main>
 
 <script>
@@ -152,12 +155,26 @@ var CL={pos:["Keep shining!","Proud of you, {n}.","Stay strong and keep going.",
 var IJ={pos:["","","","Yes!","Honestly,","Wow,","Okay,","Seriously,","Man,"],crit:["","","","Honestly,","Respectfully,","Not gonna lie,","Unpopular opinion:","To be fair,"],bal:["","","","Honestly,","To be fair,","Just saying,","All things considered,"],ask:["","","","Okay,","Honestly,","Real question:","Genuinely curious:"]};
 var EM={pos:["👏","🙌","🌟","🔥","💪","🎉"],crit:["🤔","🧐","📉","⚖️","🔍","📝"],bal:["⚖️","🧭","📊","💬","🔎","🤝"],ask:["🤔","❓","💭","🗣️","🔎","📣"]};
 var ST=["pos","crit","bal","ask"];
+C.neg=["Honestly disappointed with {n}.","{n} is overrated, I said what I said.","Not impressed by {n} at all.","{n} has been a letdown this week.","Can't see what the hype is about with {n}.","{n} is not it for me.","Boring game from {n}.","{n} needs to step up, this isn't working.","I expected a lot more from {n}.","{n} is not living up to the hype.","The hype around {n} is way too much.","Not a fan of how {n} plays.","{n} keeps repeating the same mistakes.","I'm not buying the {n} act.","{n} has lost my support.","Tired of the {n} hype.","{n} is all talk and no game right now.","No thanks, {n} isn't for me.","Skipping the {n} hype train.","{n} hasn't earned this much attention."];
+CP.neg=["Unpopular opinion: {n} doesn't deserve this much praise.","Everyone's cheering, but I just don't see what {n} is doing right.","Disliking {n}'s game isn't hate, it's an opinion.","I wanted to like {n}, but the effort isn't showing."];
+CL.neg=["Just my opinion.","Agree or disagree, that's how I see it.","That's my honest view.","It would take a lot to change my mind.","Not sorry."];
+IJ.neg=["","","","Honestly,","Not gonna lie,","Sadly,","Unpopular opinion:","Real talk:"];
+EM.neg=["👎","😕","🙄","📉","😐","🤷"];
+EV.nominat.neg=["Nominations feel fair for {n}.","{n} should be worried about these nominations."];
+EV.weekend.neg=["Weekend Ka Vaar was not great for {n}.","{n} had a rough Weekend Ka Vaar."];
+EV.health.neg=[];
+EV.fight.neg=["{n} handled that clash badly.","The drama around {n} is getting tiresome."];
+EV.exit.neg=["Rumours aside, {n}'s game hasn't convinced me.","Too much rumour talk, not enough game from {n}."];
+EV.task.neg=["{n} was weak in that task.","That task performance from {n} was disappointing."];
+EV.game.neg=["{n}'s game feels flat.","{n} has no clear strategy."];
+SH.neg=["{n} hasn't impressed me in {show}.","{show} deserves better gameplay than this from {n}."];
+var ALL=ST.concat(["neg"]);
 var STOP={is:1,the:1,a:1,an:1,of:1,to:1,for:1,and:1,in:1,on:1,at:1,by:1,with:1,are:1,was:1,be:1};
 var R={IN:'hl=en-IN&gl=IN&ceid=IN:en',US:'hl=en-US&gl=US&ceid=US:en',GB:'hl=en-GB&gl=GB&ceid=GB:en'};
 var $=function(i){return document.getElementById(i)};
 var rand=function(n){return Math.floor(Math.random()*n)};
 var pick=function(a){return a[rand(a.length)]};
-var results=[],cache={k:null,data:null},busy=false;
+var results=[],cache={k:null,data:null},busy=false,confirmed={};
 
 function status(m){$('status').textContent=m}
 function words(raw){return raw.replace(/^#/,'').replace(/[_\-]+/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([A-Za-z])(\d)/g,'$1 $2').replace(/(\d)([A-Za-z])/g,'$1 $2').replace(/\s+/g,' ').trim()}
@@ -292,6 +309,25 @@ function showIntel(d){
     m.textContent=d.ok?'No news from the last 30 days matched this search. Try the News keyword box with the full name plus the show or event.':'No recent news came back. Either there is none for this search, or the free news relays were blocked. Try again in a minute, use the News keyword box, or add your own relay under Advanced.';
     el.appendChild(m);
   }
+  var cx=newsContext(d.news);
+  if(d.news.length&&(cx.ev.length||cx.show)){
+    var box=document.createElement('div');box.className='confirm';
+    var ch=document.createElement('h2');ch.textContent='Confirm what is true before it is used';box.appendChild(ch);
+    var cn=document.createElement('p');cn.className='small';cn.textContent='News can be wrong or only rumour. Nothing below goes into the posts until you tick it, so open the stories above and check first.';box.appendChild(cn);
+    var items=cx.ev.map(function(k){return{k:k,label:EV[k].label,proof:cx.proof[k]}});
+    if(cx.show)items.push({k:'show',label:'Show or event: '+cx.show,proof:cx.proof.show});
+    items.forEach(function(it){
+      var row=document.createElement('label');row.className='crow';
+      var cb=document.createElement('input');cb.type='checkbox';cb.checked=!!confirmed[it.k];
+      cb.addEventListener('change',function(){confirmed[it.k]=cb.checked;run(false)});
+      var tx=document.createElement('span');
+      var t1=document.createElement('span');t1.textContent=it.label;
+      var t2=document.createElement('span');t2.className='small';t2.textContent='From: "'+it.proof+'"';
+      tx.appendChild(t1);tx.appendChild(document.createElement('br'));tx.appendChild(t2);
+      row.appendChild(cb);row.appendChild(tx);box.appendChild(row);
+    });
+    el.appendChild(box);
+  }
   if(d.wiki){
     var p=document.createElement('p');p.className='small';p.style.marginTop='8px';
     p.appendChild(document.createTextNode('Background only (can be out of date): '+d.wiki.sentences[0]+' '));
@@ -322,10 +358,14 @@ function sloganFor(raw){
   return toks.map(function(t,i){return i&&STOP[t.toLowerCase()]?t.toLowerCase():t}).join(' ');
 }
 function newsContext(news){
-  var text=news.map(function(h){return h.title}).join(' || '),low=text.toLowerCase(),ev=[],show='';
-  Object.keys(EVRE).forEach(function(k){if(EVRE[k].test(low))ev.push(k)});
-  for(var i=0;i<SHOWRE.length;i++){var m=SHOWRE[i].exec(text);if(m){show=m[0].replace(/\s+/g,' ').trim();break}}
-  return{ev:ev,show:show};
+  var ev=[],show='',proof={},i;
+  Object.keys(EVRE).forEach(function(k){
+    for(i=0;i<news.length;i++){if(EVRE[k].test(news[i].title.toLowerCase())){ev.push(k);proof[k]=news[i].title;break}}
+  });
+  outer:for(var j=0;j<SHOWRE.length;j++){
+    for(i=0;i<news.length;i++){var m=SHOWRE[j].exec(news[i].title);if(m){show=m[0].replace(/\s+/g,' ').trim();proof.show=news[i].title;break outer}}
+  }
+  return{ev:ev,show:show,proof:proof};
 }
 function lcFirst(s){return s.charAt(0).toLowerCase()+s.slice(1)}
 function fill(s,n,sl,show){return s.replace(/\{n\}/g,n).replace(/\{s\}/g,sl).replace(/\{show\}/g,show)}
@@ -338,9 +378,10 @@ function generate(data,raw){
   if(isTag)tag='#'+raw.replace(/[^\p{L}\p{N}_]/gu,'');
   else tag='#'+raw.split(/\s+/).map(function(w){w=w.replace(/[^\p{L}\p{N}]/gu,'');return w?w.charAt(0).toUpperCase()+w.slice(1):''}).join('');
   if(tag.length<2){status('Use letters or numbers in your hashtag or tagline.');return}
-  var name=nameFor(raw,isTag,data),slogan=sloganFor(raw),ctx=newsContext(data.news),needTag=ht||isTag;
+  var name=nameFor(raw,isTag,data),slogan=sloganFor(raw),ctx0=newsContext(data.news),needTag=ht||isTag;
+  var ctx={ev:ctx0.ev.filter(function(k){return confirmed[k]}),show:confirmed.show?ctx0.show:''};
   var base={},evl={};
-  ST.forEach(function(sn){
+  ALL.forEach(function(sn){
     var b=C[sn].slice();
     if(sn!=='pos')b=b.filter(function(l){return l.indexOf('{s}')<0});
     if(mode==='posts')b=b.concat(CP[sn]);
@@ -371,7 +412,10 @@ function generate(data,raw){
   if(data.news.length){
     var labels=ctx.ev.map(function(k){return EV[k].label});
     if(ctx.show)labels.push(ctx.show);
-    msg+=labels.length?'. Tied to what the news says: '+labels.join(', ')+'.':'. The latest news was checked, but nothing specific stood out, so the lines are general.';
+    var poss=ctx0.ev.length+(ctx0.show?1:0);
+    if(labels.length)msg+='. Tied to the facts you confirmed: '+labels.join(', ')+'.';
+    else if(poss)msg+='. The news mentions '+poss+' possible event'+(poss>1?'s':'')+'. Tick the ones you have checked and are true, and the lines will use them. Until then they stay general.';
+    else msg+='. The latest news was checked, but nothing specific stood out, so the lines are general.';
   }else msg+='. No recent news was found, so the lines are general.';
   if(out.length<n)msg+=' That is the most unique ones this setting can give; try Mixed for more.';
   status(msg);
@@ -398,7 +442,7 @@ function run(force){
   if(!force&&cache.k===key&&cache.data){generate(cache.data,raw);return}
   busy=true;$('go').disabled=true;status('Searching the latest news for "'+(kw||words(raw))+'"…');
   research(raw,kw,region).then(function(d){
-    cache={k:key,data:d};showIntel(d);generate(d,raw);
+    cache={k:key,data:d};confirmed={};showIntel(d);generate(d,raw);
   }).catch(function(){
     var d={wiki:null,news:[],q:kw||words(raw),ok:false,auto:!kw};cache={k:key,data:d};showIntel(d);generate(d,raw);
   }).then(function(){busy=false;$('go').disabled=false});
