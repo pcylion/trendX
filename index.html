@@ -359,6 +359,12 @@ EV.task.neg=["{n} was weak in that task.","That task performance from {n} was di
 EV.game.neg=["{n}'s game feels flat.","{n} has no clear strategy."];
 SH.neg=["{n} hasn't impressed me in {show}.","{show} deserves better gameplay than this from {n}."];
 var ALL=ST.concat(["neg"]);
+C.pos=C.pos.concat(["Honestly can't stop rooting for {n}.","{n} has been the highlight of the show for me.","Watching {n} play is the best part of my day.","{n} handles everything with so much grace.","You're doing great, {n}. Don't let the noise get to you.","Big respect to {n} for staying calm.","That's exactly why I'm a fan of {n}.","{n} deserves way more credit than people give.","No matter what anyone says, {n} is the real deal.","So proud of how {n} is playing.","{n} just keeps getting better every week.","Can't believe how well {n} is handling all this.","Proud to support {n} all the way.","{n} is the one I'm backing, no doubt.","Everyone is talking about {n} for a reason.","{n} stays true to themselves and that's rare."]);
+C.crit=C.crit.concat(["I really wanted to like {n}, but this week fell flat.","Not a fan of the way {n} handled that.","{n} has potential, but the game isn't there yet.","Hard to defend {n}'s choices this week.","I think {n} is playing it too safe.","{n} keeps getting a free pass and I don't get why.","Respectfully, {n} didn't impress me this time.","If {n} wants to win, a lot has to change."]);
+C.neg=C.neg.concat(["I'm done defending {n} at this point.","{n} just doesn't do it for me.","Another week, another disappointing moment from {n}.","I don't see the appeal of {n} at all.","{n} is getting way too much attention.","I was rooting for {n}, but not anymore.","Really not feeling {n}'s game.","Not joining the {n} fan club, sorry."]);
+C.bal=C.bal.concat(["I like some of what {n} does, and some of it I don't.","{n} is doing fine, nothing more, nothing less.","Not sure what to think about {n} yet.","Fair to say {n} has had good days and bad days.","There's a lot of noise around {n}, so I'm waiting for facts.","{n} is interesting to watch, whatever side you're on.","Honestly, {n} could go either way from here.","I respect {n}'s effort even if I don't agree with everything."]);
+C.ask=C.ask.concat(["Am I the only one curious where {n} goes from here?","Do you think {n} can pull this off?","What's your honest opinion about {n} right now?","Is {n} really as strong as people say?","Who else is watching {n} closely this week?","How long can {n} keep this up?","Do you think {n} deserves all this support?","What would you do differently if you were {n}?"]);
+
 var STOP={is:1,the:1,a:1,an:1,of:1,to:1,for:1,and:1,in:1,on:1,at:1,by:1,with:1,are:1,was:1,be:1};
 var R={IN:'hl=en-IN&gl=IN&ceid=IN:en',US:'hl=en-US&gl=US&ceid=US:en',GB:'hl=en-GB&gl=GB&ceid=GB:en'};
 var $=function(i){return document.getElementById(i)};
@@ -449,8 +455,8 @@ function fetchNews(q,quoted,region,days){
 }
 
 function research(raw,kw,region){
-  var q0=words(raw),qw=q0.toLowerCase().split(' ').filter(function(w){return w.length>2});
-  var rel=function(s){s=(s||'').toLowerCase();return qw.some(function(w){return s.indexOf(w)>-1})};
+  var q0=kw?words(kw):words(raw),qw=q0.toLowerCase().split(' ').filter(function(w){return w.length>2});
+  var rel=function(s){s=(s||'').toLowerCase();var f=s.replace(/[^a-z0-9]/g,'');return qw.some(function(w){return s.indexOf(w)>-1||f.indexOf(w)>-1})};
   var wikiU='https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(q0)+'&gsrlimit=3&prop=extracts%7Cinfo&exintro=1&explaintext=1&exsentences=5&inprop=url&format=json&origin=*';
   var wiki=getJSON(wikiU,8000).then(function(d){
     var pages=d&&d.query&&d.query.pages?Object.keys(d.query.pages).map(function(k){return d.query.pages[k]}):[];
@@ -545,14 +551,35 @@ function copySync(t){
   return ok;
 }
 
+function titleCase(w){return w.replace(/\b([a-z])/g,function(m){return m.toUpperCase()})}
+function grams(text){
+  var toks=text.replace(/['\u2019]s\b/g,'').replace(/[^A-Za-z\u00C0-\u024F\s'-]/g,' ').split(/\s+/).filter(Boolean),out=[],i,len;
+  for(i=0;i<toks.length;i++)for(len=1;len<=3&&i+len<=toks.length;len++){
+    var g=toks.slice(i,i+len);
+    if(g.every(function(w){return/^[A-Z]/.test(w)}))out.push(g.join(' '));
+  }
+  return out;
+}
 function nameFor(raw,isTag,data){
-  if(!isTag)return raw.trim();
-  var toks=words(raw).split(' ').filter(Boolean),lc=toks.map(function(x){return x.toLowerCase()});
-  var wf=data.wiki&&data.wiki.title.split(' ')[0];
-  if(wf&&lc.indexOf(wf.toLowerCase())>-1)return wf;
-  var out=[];
-  for(var i=0;i<toks.length;i++){if(STOP[lc[i]])break;out.push(toks[i])}
-  return out.length?out.join(' '):toks.join(' ');
+  if(!isTag){var t=raw.trim();return{full:t,first:t}}
+  var flat=raw.replace(/^#/,'').replace(/[^A-Za-z0-9]/g,'').toLowerCase();
+  var toks=words(raw).split(' ').filter(Boolean),lc=toks.map(function(x){return x.toLowerCase()}),base=[],i;
+  for(i=0;i<toks.length;i++){if(STOP[lc[i]])break;base.push(toks[i])}
+  base=(base.length?base:toks).join(' ');
+  var baseFlat=base.replace(/\s+/g,'').toLowerCase();
+  var cands=[];
+  if(data.wiki)cands.push(data.wiki.title);
+  if(data.q)cands.push(data.q);
+  (data.news||[]).forEach(function(h){cands.push(h.title)});
+  var best=null;
+  cands.forEach(function(c){grams(c).forEach(function(g){
+    var j=g.replace(/\s+/g,'').toLowerCase();
+    if(j.length>=3&&flat.indexOf(j)===0&&(!best||j.length>best.j.length))best={g:g,j:j};
+  })});
+  var full=(best&&best.j.length>=baseFlat.length)?best.g:titleCase(base);
+  var wt=data.wiki&&data.wiki.title;
+  if(wt&&wt.split(' ')[0].toLowerCase()===full.split(' ')[0].toLowerCase()&&wt.length>=full.length)full=wt;
+  return{full:full,first:full.split(' ')[0]};
 }
 function sloganFor(raw){
   var toks=words(raw).split(' ').filter(Boolean);
@@ -568,7 +595,7 @@ function newsContext(news){
   }
   return{ev:ev,show:show,proof:proof};
 }
-function lcFirst(s){return s.charAt(0).toLowerCase()+s.slice(1)}
+function lcFirst(s){return /^I(\b|')/.test(s)?s:s.charAt(0).toLowerCase()+s.slice(1)}
 function fill(s,n,sl,show){return s.replace(/\{n\}/g,n).replace(/\{s\}/g,sl).replace(/\{show\}/g,show)}
 
 function generate(data,raw){
@@ -579,7 +606,7 @@ function generate(data,raw){
   if(isTag)tag='#'+raw.replace(/[^\p{L}\p{N}_]/gu,'');
   else tag='#'+raw.split(/\s+/).map(function(w){w=w.replace(/[^\p{L}\p{N}]/gu,'');return w?w.charAt(0).toUpperCase()+w.slice(1):''}).join('');
   if(tag.length<2){status('Use letters or numbers in your hashtag or tagline.');return}
-  var name=nameFor(raw,isTag,data),slogan=sloganFor(raw),ctx0=newsContext(data.news),needTag=ht||isTag;
+  var nm=nameFor(raw,isTag,data),slogan=sloganFor(raw),ctx0=newsContext(data.news),needTag=ht||isTag;
   var ctx={ev:ctx0.ev.filter(function(k){return confirmed[k]}),show:confirmed.show?ctx0.show:''};
   var base={},evl={};
   ALL.forEach(function(sn){
@@ -600,6 +627,8 @@ function generate(data,raw){
     var useEv=evl[sn].length&&Math.random()<0.4;
     var core=pick(useEv?evl[sn]:base[sn]);
     var ij=pick(IJ[sn]),cl=(mode==='posts'||Math.random()<0.35)?pick(CL[sn]):'';
+    if(/^(Unpopular opinion|Honest|Be honest|Real talk|Genuine)/i.test(core))ij='';
+    var name=(nm.full!==nm.first&&Math.random()<0.35)?nm.full:nm.first;
     var body=fill(core,name,slogan,ctx.show);
     if(ij&&/[,:]$/.test(ij)&&core.charAt(0)!=='{')body=lcFirst(body);
     var txt=[ij,body,fill(cl,name,slogan,ctx.show)].filter(Boolean).join(' ');
@@ -617,6 +646,7 @@ function generate(data,raw){
     else if(poss)msg+='. The news mentions '+poss+' possible event'+(poss>1?'s':'')+'. Tick the ones you have checked and are true, and the lines will use them. Until then they stay general.';
     else msg+='. The latest news was checked, but nothing specific stood out, so the lines are general.';
   }else msg+='. No recent news was found, so the lines are general.';
+  if(isTag&&nm.full.indexOf(' ')<0&&nm.full.length>=9&&!/[A-Z]/.test(raw.slice(2)))msg+=' Tip: type the full name in the News keyword box so the lines can use it.';
   if(out.length<n)msg+=' That is the most unique ones this setting can give; try Mixed for more.';
   if(mode==='comments'&&replyId()&&out.length>10)msg+=' Tip: many replies on one post can look like spam, so use just a few per post and put them in your own words.';
   status(msg);
