@@ -144,6 +144,11 @@ details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
       <label class="lbl" for="q">Hashtag or tagline</label>
       <input id="q" class="inp lg" type="text" placeholder="#YourHashtag or your tagline" autocomplete="off" autocapitalize="off" maxlength="80">
     </div>
+    <div id="replybox" hidden>
+      <label class="lbl" for="replyUrl">Post to reply to <span class="opt">(optional)</span></label>
+      <input id="replyUrl" class="inp" type="url" placeholder="Paste the post link" autocomplete="off" autocapitalize="off">
+      <p class="small" id="replyInfo" style="margin-top:6px"></p>
+    </div>
     <div class="two">
       <div>
         <label class="lbl" for="kw">News keyword <span class="opt">(optional)</span></label>
@@ -209,7 +214,7 @@ details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
 
 <footer class="legal">
   <h3>Responsible use</h3>
-  <p>Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This app only writes text. The Post on X button just opens X with the text filled in, and you press Post yourself. Automated mass posting can break X's rules and get accounts limited. Critical and negative lines stay on opinions about the game and the claims, with no insults, threats or false accusations, and they are not meant to be posted in bulk at one person.</p>
+  <p>Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This app only writes text. The Post on X and Reply on X buttons just open X with the text filled in, and you press Post yourself. If X does not fill in the reply, tap Copy and paste it into the post. Automated mass posting can break X's rules and get accounts limited. Critical and negative lines stay on opinions about the game and the claims, with no insults, threats or false accusations, and they are not meant to be posted in bulk at one person.</p>
   <p>Install: on Android tap Install app above. On iPhone use Share, then Add to Home Screen.</p>
 </footer>
 
@@ -260,7 +265,7 @@ var R={IN:'hl=en-IN&gl=IN&ceid=IN:en',US:'hl=en-US&gl=US&ceid=US:en',GB:'hl=en-G
 var $=function(i){return document.getElementById(i)};
 var rand=function(n){return Math.floor(Math.random()*n)};
 var pick=function(a){return a[rand(a.length)]};
-var results=[],cache={k:null,data:null},busy=false,confirmed={};
+var results=[],resultsMode='posts',cache={k:null,data:null},busy=false,confirmed={};
 
 function status(m){$('status').textContent=m}
 function words(raw){return raw.replace(/^#/,'').replace(/[_\-]+/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([A-Za-z])(\d)/g,'$1 $2').replace(/(\d)([A-Za-z])/g,'$1 $2').replace(/\s+/g,' ').trim()}
@@ -493,7 +498,7 @@ function generate(data,raw){
     if(txt.length>280||seen[txt])continue;
     seen[txt]=1;out.push(txt);if(useEv)used++;
   }
-  results=out;render();
+  results=out;resultsMode=mode;render();
   var msg='Made '+out.length+' '+mode+' in a natural fan voice';
   if(data.news.length){
     var labels=ctx.ev.map(function(k){return EV[k].label});
@@ -504,7 +509,27 @@ function generate(data,raw){
     else msg+='. The latest news was checked, but nothing specific stood out, so the lines are general.';
   }else msg+='. No recent news was found, so the lines are general.';
   if(out.length<n)msg+=' That is the most unique ones this setting can give; try Mixed for more.';
+  if(mode==='comments'&&replyId()&&out.length>10)msg+=' Tip: many replies on one post can look like spam, so use just a few per post and put them in your own words.';
   status(msg);
+}
+
+function replyId(){
+  var v=($('replyUrl').value||'').trim();
+  if(!v)return'';
+  var m=/(?:^|\/)status(?:es)?\/(\d{5,25})/i.exec(v)||/^(\d{8,25})$/.exec(v);
+  return m?m[1]:'';
+}
+function replyInfo(){
+  var v=($('replyUrl').value||'').trim(),id=replyId(),el=$('replyInfo');
+  el.textContent='';
+  if(!v)return;
+  if(!id){el.textContent='That does not look like an X post link. It should contain /status/ and a number.';return}
+  var a=document.createElement('a');a.href='https://x.com/i/status/'+id;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Open that post to check it';
+  el.appendChild(document.createTextNode('Replies will go to that post. '));el.appendChild(a);
+}
+function toggleReply(){
+  var m=document.querySelector('input[name=mode]:checked').value;
+  $('replybox').hidden=m!=='comments';
 }
 
 function render(){
@@ -516,8 +541,9 @@ function render(){
     var acts=document.createElement('div');acts.className='acts';
     var b=document.createElement('button');b.type='button';b.className='btn sm';b.textContent='Copy';
     b.addEventListener('click',function(){copyText(t).then(function(ok){flash(b,ok?'Copied':'Copy failed')})});
-    var x=document.createElement('a');x.className='btn sm primary';x.textContent='Post on X';
-    x.href='https://x.com/intent/post?text='+encodeURIComponent(t);x.target='_blank';x.rel='noopener noreferrer';
+    var rid=resultsMode==='comments'?replyId():'';
+    var x=document.createElement('a');x.className='btn sm primary';x.textContent=rid?'Reply on X':'Post on X';
+    x.href='https://x.com/intent/tweet?'+(rid?'in_reply_to='+rid+'&':'')+'text='+encodeURIComponent(t);x.target='_blank';x.rel='noopener noreferrer';
     acts.appendChild(b);acts.appendChild(x);foot.appendChild(c);foot.appendChild(acts);
     li.appendChild(p);li.appendChild(foot);ul.appendChild(li);
   });
@@ -565,6 +591,9 @@ function run(force){
 });
 try{var sp=localStorage.getItem('trendx_relay');if(sp)$('proxy').value=sp}catch(e){}
 $('proxy').addEventListener('change',function(){try{localStorage.setItem('trendx_relay',$('proxy').value.trim())}catch(e){}});
+$('replyUrl').addEventListener('input',function(){replyInfo();if(results.length)render()});
+$('m1').addEventListener('change',toggleReply);$('m2').addEventListener('change',toggleReply);
+toggleReply();
 $('go').addEventListener('click',function(){run(true)});
 $('again').addEventListener('click',function(){run(false)});
 $('q').addEventListener('keydown',function(e){if(e.key==='Enter')run(true)});
