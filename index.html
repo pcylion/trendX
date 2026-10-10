@@ -178,6 +178,57 @@ details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
 :root[data-theme="dark"] .badge.crit,:root[data-theme="dark"] .badge.neg{background:#3A1A1E;color:#FDA29B}
 :root[data-theme="dark"] .badge.bal{background:#232E4A;color:#C3CCE0}
 :root[data-theme="dark"] .badge.ask{background:#3A2E14;color:#FEC84B}
+#list p{white-space:pre-line}
+
+/* Tatsar, the guide */
+:root{--ttbg:#FFF1EC}
+:root[data-theme="dark"]{--ttbg:#2B1F27}
+.tt{display:block;overflow:visible;width:100%;height:100%}
+.tt-tail,.tt-body,.tt-head,.tt-ear-l,.tt-ear-r,.tt-eye{transform-box:view-box}
+.tt-eyes-happy{display:none}
+.happy .tt-eyes-open{display:none}
+.happy .tt-eyes-happy{display:inline}
+@keyframes tt-breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.025)}}
+@keyframes tt-tail{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(9deg)}}
+@keyframes tt-blink{0%,92%,100%{transform:scaleY(1)}95.5%{transform:scaleY(.08)}}
+@keyframes tt-ear{0%,84%,100%{transform:rotate(0)}89%{transform:rotate(-9deg)}94%{transform:rotate(3deg)}}
+@keyframes tt-tilt{0%,100%{transform:rotate(0)}30%{transform:rotate(-2.5deg)}70%{transform:rotate(2deg)}}
+@keyframes tt-hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-9px)}}
+@keyframes tt-bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+@keyframes tt-pop{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes tt-ring{0%,100%{outline-color:var(--accent)}50%{outline-color:color-mix(in srgb,var(--accent) 30%,transparent)}}
+.tt-body{animation:tt-breathe 3.6s ease-in-out infinite}
+.tt-tail{animation:tt-tail 2.6s ease-in-out infinite}
+.tt-eye{animation:tt-blink 4.8s infinite}
+.tt-ear-l{animation:tt-ear 7s infinite}
+.tt-ear-r{animation:tt-ear 9s 1.5s infinite}
+.tt-head{animation:tt-tilt 8s ease-in-out infinite}
+.happy .tt-tail{animation-duration:.45s}
+.happy .tt-btn{animation:tt-hop .6s ease 2}
+.lcat{flex:none;width:64px;height:64px;border-radius:50%;background:var(--ttbg);overflow:hidden;animation:tt-bob 1.3s ease-in-out infinite}
+.empty-cat{width:132px;margin:0 auto 6px}
+.empty-cat .tt{height:auto}
+.tt-wrap{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,calc(env(safe-area-inset-bottom,0px) + 10px));z-index:40;display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:none}
+.tt-wrap>*{pointer-events:auto}
+.tt-btn{width:68px;height:68px;border-radius:50%;border:2px solid var(--line2);background:var(--ttbg);padding:0;cursor:pointer;box-shadow:0 6px 18px rgba(16,24,40,.2);display:grid;place-items:center;overflow:hidden;transition:transform .15s}
+.tt-btn:hover{transform:translateY(-2px) scale(1.04)}
+.tt-panel{width:min(340px,calc(100vw - 28px));background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px rgba(16,24,40,.24);padding:14px;display:grid;gap:10px;animation:tt-pop .22s ease both}
+.tt-ph{display:flex;align-items:center;gap:10px}
+.tt-ph b{display:block;line-height:1.2}
+.tt-ph small{color:var(--muted);font-size:.78rem}
+.tt-mini{width:44px;height:44px;border-radius:50%;background:var(--ttbg);flex:none;overflow:hidden}
+.tt-x{margin-left:auto;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:1.3rem;line-height:1;cursor:pointer;color:var(--muted)}
+.tt-msg{font-size:.96rem;line-height:1.5}
+.tt-prog{display:flex;gap:4px}
+.tt-prog i{flex:1;height:4px;border-radius:99px;background:var(--line)}
+.tt-prog i.on{background:var(--accent)}
+.tt-actions{display:flex;gap:8px;flex-wrap:wrap}
+.tt-quiet{display:flex;gap:8px;align-items:center;font-size:.8rem;color:var(--muted)}
+.tt-quiet input{width:18px;height:18px;accent-color:var(--accent)}
+.tt-quip{max-width:min(270px,calc(100vw - 110px));background:var(--surface);border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:10px 13px;font-size:.9rem;line-height:1.4;box-shadow:0 8px 24px rgba(16,24,40,.18);animation:tt-pop .25s ease both}
+.tt-hl{outline:3px solid var(--accent);outline-offset:6px;border-radius:12px;scroll-margin-top:110px;scroll-margin-bottom:300px;animation:tt-ring 1.6s ease-in-out infinite}
+.legal{padding-bottom:110px}
+@media (prefers-reduced-motion:reduce){.tt-body,.tt-tail,.tt-eye,.tt-ear-l,.tt-ear-r,.tt-head,.lcat,.happy .tt-btn,.tt-panel,.tt-quip,.tt-hl{animation:none}}
 </style>
 </head>
 <body>
@@ -246,6 +297,13 @@ details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
         </div>
       </div>
       <div>
+        <span class="lbl" id="ll">Language</span>
+        <div class="seg" role="radiogroup" aria-labelledby="ll">
+          <input type="radio" name="lang" id="l_en" value="en" checked><label for="l_en">English</label>
+          <input type="radio" name="lang" id="l_hi" value="hi"><label for="l_hi">Hinglish</label>
+        </div>
+      </div>
+      <div>
         <label class="lbl" for="n">How many (1 to 100)</label>
         <div class="countrow">
           <div class="stepper">
@@ -260,7 +318,7 @@ details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
 
     <div class="sec">
       <p class="eyebrow">Options</p>
-      <label class="sw"><span>Add hashtag to taglines<small>Hashtags you type are always included</small></span><input type="checkbox" id="ht" checked></label>
+      <label class="sw"><span>Tag on its own last line<small>Your tagline is added exactly as typed. Hashtags are always added.</small></span><input type="checkbox" id="ht" checked></label>
       <details class="adv">
         <summary>Advanced: my own news relay</summary>
         <p>If news keeps failing, deploy the free relay from worker.js on Cloudflare Workers and paste its address here. It is saved on this device only.</p>
@@ -278,10 +336,7 @@ details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
 <section class="output" id="output" aria-label="Results">
   <div class="card loader" id="loading" hidden aria-hidden="true">
     <div class="lhead">
-      <svg class="lbub" width="52" height="52" viewBox="0 0 52 52" fill="none" aria-hidden="true">
-        <path d="M10 8h32a6 6 0 0 1 6 6v18a6 6 0 0 1-6 6H27l-9 8v-8h-8a6 6 0 0 1-6-6V14a6 6 0 0 1 6-6z" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round" fill="var(--soft)"/>
-        <circle class="d d1" cx="18" cy="23" r="2.6" fill="var(--accent)"/><circle class="d d2" cx="26" cy="23" r="2.6" fill="var(--accent)"/><circle class="d d3" cx="34" cy="23" r="2.6" fill="var(--accent)"/>
-      </svg>
+      <span class="lcat" id="ttLoad" aria-hidden="true"></span>
       <div><p class="lt">Preparing your results</p><p class="small">This usually takes a few seconds.</p></div>
     </div>
     <ol class="steps" id="steps">
@@ -292,14 +347,11 @@ details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
   </div>
 
   <div class="empty" id="empty">
-    <svg width="96" height="72" viewBox="0 0 96 72" fill="none" aria-hidden="true">
-      <rect x="6" y="8" width="52" height="34" rx="9" stroke="var(--line2)" stroke-width="2.4"/><path d="M18 42v10l11-10" stroke="var(--line2)" stroke-width="2.4" stroke-linejoin="round"/>
-      <rect x="38" y="26" width="52" height="34" rx="9" fill="var(--soft)" stroke="var(--accent)" stroke-width="2.4"/><path d="M78 60v8l-10-8" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round"/>
-      <path d="M57 36l-2 16M67 36l-2 16M51 41h22M50 47h22" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round"/>
-    </svg>
+    <div class="empty-cat" id="ttEmpty" aria-hidden="true"></div>
     <h2>Your results will appear here</h2>
     <p>Three quick steps:</p>
     <ol><li>Enter a hashtag or tagline</li><li>Choose posts or comments, type and count</li><li>Generate, then copy or send to X</li></ol>
+    <button type="button" class="btn sm" id="ttTour" style="margin-top:14px">Take a tour with Tatsar</button>
   </div>
 
   <section class="card intel" id="intel" hidden aria-label="Latest news"></section>
@@ -317,6 +369,23 @@ details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
   <p>Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This app only writes text. The Post on X button opens X with the text filled in, and you press Post yourself. For replies, the comment is copied and the post opens so you can paste it into the reply box. Automated mass posting can break X's rules and get accounts limited. Critical and negative lines stay on opinions about the game and the claims, with no insults, threats or false accusations, and they are not meant to be posted in bulk at one person.</p>
   <p>Install: on Android tap Install above. On iPhone use Share, then Add to Home Screen.</p>
 </footer>
+
+
+<div class="tt-wrap" id="tt">
+  <section class="tt-panel" id="ttPanel" hidden role="dialog" aria-label="Tatsar, your guide" aria-live="polite">
+    <div class="tt-ph">
+      <span class="tt-mini" id="ttMini" aria-hidden="true"></span>
+      <div><b>Tatsar</b><small>Your guide</small></div>
+      <button type="button" class="tt-x" id="ttClose" aria-label="Close guide">&times;</button>
+    </div>
+    <p class="tt-msg" id="ttMsg"></p>
+    <div class="tt-prog" id="ttProg" aria-hidden="true"></div>
+    <div class="tt-actions" id="ttActions"></div>
+    <label class="tt-quiet"><input type="checkbox" id="ttQuiet"> Keep Tatsar quiet (no pop-up hints)</label>
+  </section>
+  <div class="tt-quip" id="ttQuip" hidden role="status"></div>
+  <button type="button" class="tt-btn" id="ttBtn" aria-label="Ask Tatsar for help" aria-expanded="false"><span id="ttAvatar" aria-hidden="true"></span></button>
+</div>
 
 <script>
 
@@ -359,6 +428,17 @@ EV.task.neg=["{n} was weak in that task.","That task performance from {n} was di
 EV.game.neg=["{n}'s game feels flat.","{n} has no clear strategy."];
 SH.neg=["{n} hasn't impressed me in {show}.","{show} deserves better gameplay than this from {n}."];
 var ALL=ST.concat(["neg"]);
+var HI={
+C:{pos:["{n} bhai ka koi jawab nahi!","{n} ne toh dil jeet liya!","Sach mein, {n} jaisa koi nahi.","{n} ka game full on hai!","{n} ko support karna banta hai!","Kya baat hai {n}, mast khel rahe ho!","{n} hi asli hero hai.","Dil se support {n} ko!","{n} ka swag hi alag hai.","Jo bhi bolo, {n} sabse alag hai.","{n} ki baat hi kuch aur hai.","Bhai {n} ne toh kamaal kar diya!","Aise hi khelte raho {n}, hum sab saath hain!","{n} ko jitna pyaar do kam hai.","Har baar {n} sabka dil jeet lete hain.","{n} pe pura bharosa hai!","{n} ka naam hi kaafi hai.","Sabse alag, sabse khaas, {n}!","{n} ke bina maza hi nahi aata.","{n} jahan hote hain, wahan raunak hoti hai."],
+crit:["{n} se thodi aur ummeed thi.","Is baar {n} ka game utna strong nahi laga.","Sirf hype hai, {n} ko aur dikhana padega.","{n} ko apni strategy badalni chahiye.","Mujhe {n} ka yeh move samajh nahi aaya.","Itni tareef ke layak abhi nahi lagi {n} ki performance.","{n} ko aur mehnat karni padegi.","Fans bahut hain, par game mein aur dum chahiye {n} ke."],
+neg:["Mujhe toh {n} bilkul pasand nahi aaya.","{n} ki performance se main khush nahi hoon.","Is baar {n} ne nirash kiya.","{n} ka game boring lag raha hai.","Mujhe samajh nahi aata {n} ko itna hype kyun mil raha hai.","{n} mere liye nahi hai, bas.","Ab {n} ka support karna mushkil hai.","Bahut zyada hype hai {n} ke baare mein."],
+bal:["{n} mein kuch cheezein achhi hain, kuch nahi.","{n} theek khel rahe hain, na zyada na kam.","Abhi kuch kehna jaldi hoga {n} ke baare mein.","Dono side ki baat sahi hai {n} ke liye.","{n} dekhne mein interesting hain, jo bhi side ho.","Mujhe {n} ki mehnat pasand hai, par sab kuch nahi.","{n} ka game aage kaisa jaata hai, dekhna padega.","Hype aur facts alag cheezein hain, {n} ke case mein bhi."],
+ask:["Aap sabko {n} ka game kaisa lag raha hai?","Kya {n} aage jaa paayenge?","Sach batao, {n} ko itna support milna chahiye?","Kya {n} sach mein itna strong hain?","Is hafte {n} ka best moment kaunsa tha?","{n} ke baare mein aap kya sochte ho?","Kya {n} jeet paayenge?","Kisko lagta hai {n} finale tak jaayenge?"]},
+CP:{pos:["Jo bhi bolo, {n} apni mehnat se sabka dil jeet rahe hain.","{n} ko dekh ke sach mein maza aa jaata hai.","Itna pyaar aise hi nahi milta, {n} ne kamaya hai."],crit:["Seedhi baat: {n} se aur ummeed thi."],neg:["Meri raay alag hai: {n} ka game mujhe pasand nahi aaya."],bal:["Na fan, na hater, bas {n} ka safar dekh rahe hain."],ask:["Seedha sawaal: {n} ke baare mein aap sab kya sochte ho?"]},
+CL:{pos:["Aise hi chamakte raho.","Hum sab saath hain.","Bahut aage jaoge.","Support jaari rahega.","Pyaar bana rehna chahiye."],crit:["Bas meri raay hai.","Galat lage toh bol dena.","Dekhte hain aage kya hota hai."],neg:["Yeh meri personal raay hai.","Sabki apni pasand hoti hai."],bal:["Dekhte hain aage kya hota hai.","Dono side ki baat suni jaani chahiye."],ask:["Comment mein batao.","Apni raay zaroor batao."]},
+IJ:{pos:["","","","Sach mein,","Yaar,","Arre,","Seriously,","Bhai,"],crit:["","","","Seedhi baat,","Honestly,","Yaar,"],neg:["","","","Seedhi baat,","Honestly,","Yaar,"],bal:["","","","Dekho,","Honestly,"],ask:["","","","Bhai,","Sach batao,"]},
+EV:{nominat:{pos:["Nomination ho ya na ho, {n} sabse strong hain!","Nomination se kuch nahi hota, {n} ke saath hain hum!"]},weekend:{pos:["Weekend Ka Vaar mein {n} chha gaye!"]},health:{pos:["Jaldi theek ho jao {n}, hum sab saath hain!"]},fight:{pos:["Kuch bhi ho, {n} apni class nahi chhodte!"]},exit:{pos:["Rumours kuch bhi bolen, hum {n} ke saath hain!"]},task:{pos:["Task mein {n} ne kamaal kar diya!"]},game:{pos:["{n} ka game din-ba-din strong ho raha hai!"]}}};
+
 C.pos=C.pos.concat(["Honestly can't stop rooting for {n}.","{n} has been the highlight of the show for me.","Watching {n} play is the best part of my day.","{n} handles everything with so much grace.","You're doing great, {n}. Don't let the noise get to you.","Big respect to {n} for staying calm.","That's exactly why I'm a fan of {n}.","{n} deserves way more credit than people give.","No matter what anyone says, {n} is the real deal.","So proud of how {n} is playing.","{n} just keeps getting better every week.","Can't believe how well {n} is handling all this.","Proud to support {n} all the way.","{n} is the one I'm backing, no doubt.","Everyone is talking about {n} for a reason.","{n} stays true to themselves and that's rare."]);
 C.crit=C.crit.concat(["I really wanted to like {n}, but this week fell flat.","Not a fan of the way {n} handled that.","{n} has potential, but the game isn't there yet.","Hard to defend {n}'s choices this week.","I think {n} is playing it too safe.","{n} keeps getting a free pass and I don't get why.","Respectfully, {n} didn't impress me this time.","If {n} wants to win, a lot has to change."]);
 C.neg=C.neg.concat(["I'm done defending {n} at this point.","{n} just doesn't do it for me.","Another week, another disappointing moment from {n}.","I don't see the appeal of {n} at all.","{n} is getting way too much attention.","I was rooting for {n}, but not anymore.","Really not feeling {n}'s game.","Not joining the {n} fan club, sorry."]);
@@ -553,15 +633,36 @@ function copySync(t){
 
 function titleCase(w){return w.replace(/\b([a-z])/g,function(m){return m.toUpperCase()})}
 function grams(text){
-  var toks=text.replace(/['\u2019]s\b/g,'').replace(/[^A-Za-z\u00C0-\u024F\s'-]/g,' ').split(/\s+/).filter(Boolean),out=[],i,len;
-  for(i=0;i<toks.length;i++)for(len=1;len<=3&&i+len<=toks.length;len++){
-    var g=toks.slice(i,i+len);
-    if(g.every(function(w){return/^[A-Z]/.test(w)}))out.push(g.join(' '));
-  }
+  var segs=text.replace(/['\u2019]s\b/g,'').split(/[:;,.!?|()"\u201C\u201D\u2018\u2019\[\]\d]+|\s[-\u2013\u2014]\s/),out=[];
+  segs.forEach(function(seg){
+    var toks=seg.replace(/[^A-Za-z\u00C0-\u024F\s'-]/g,' ').split(/\s+/).filter(Boolean),i,len;
+    for(i=0;i<toks.length;i++)for(len=1;len<=3&&i+len<=toks.length;len++){
+      var g=toks.slice(i,i+len);
+      if(g.every(function(w){return/^[A-Z]/.test(w)}))out.push(g.join(' '));
+    }
+  });
   return out;
 }
 function nameFor(raw,isTag,data){
-  if(!isTag){var t=raw.trim();return{full:t,first:t}}
+  if(!isTag){
+    var tl={};words(raw).toLowerCase().split(' ').forEach(function(w){if(w.length>2&&!STOP[w])tl[w]=1});
+    var score={},pick1=null;
+    function add(text,wt){grams(text).forEach(function(g){
+      var hit=g.toLowerCase().split(' ').some(function(w){return tl[w]});
+      if(hit)score[g]=(score[g]||0)+wt;
+    })}
+    if(!data.auto&&data.q)add(data.q,6);
+    if(data.wiki)add(data.wiki.title,6);
+    (data.news||[]).forEach(function(h){add(h.title,1)});
+    Object.keys(score).forEach(function(g){
+      var sc=score[g]*10+g.split(' ').length;
+      if(!pick1||sc>pick1.sc)pick1={g:g,sc:sc};
+    });
+    var fullT;
+    if(pick1)fullT=pick1.g;
+    else{var lw=words(raw).split(' ').filter(function(w){return w.length>2&&!STOP[w.toLowerCase()]});fullT=titleCase((lw.length?lw[lw.length-1]:raw).toLowerCase())}
+    return{full:fullT,first:fullT.split(' ')[0],tagline:true,found:!!pick1};
+  }
   var flat=raw.replace(/^#/,'').replace(/[^A-Za-z0-9]/g,'').toLowerCase();
   var toks=words(raw).split(' ').filter(Boolean),lc=toks.map(function(x){return x.toLowerCase()}),base=[],i;
   for(i=0;i<toks.length;i++){if(STOP[lc[i]])break;base.push(toks[i])}
@@ -602,22 +703,20 @@ function generate(data,raw){
   var n=Math.max(1,Math.min(100,parseInt($('n').value,10)||10));$('n').value=n;
   var mode=document.querySelector('input[name=mode]:checked').value;
   var sel=typeVal(),ht=$('ht').checked;
-  var isTag=raw.charAt(0)==='#',tag;
-  if(isTag)tag='#'+raw.replace(/[^\p{L}\p{N}_]/gu,'');
-  else tag='#'+raw.split(/\s+/).map(function(w){w=w.replace(/[^\p{L}\p{N}]/gu,'');return w?w.charAt(0).toUpperCase()+w.slice(1):''}).join('');
-  if(tag.length<2){status('Use letters or numbers in your hashtag or tagline.');return}
+  var isTag=raw.charAt(0)==='#',lang=langVal();
+  var tagText=isTag?('#'+raw.replace(/[^\p{L}\p{N}_]/gu,'')):raw.replace(/\s+/g,' ').trim();
+  if(tagText.replace(/[^\p{L}\p{N}]/gu,'').length<1){status('Use letters or numbers in your hashtag or tagline.');return}
   var nm=nameFor(raw,isTag,data),slogan=sloganFor(raw),ctx0=newsContext(data.news),needTag=ht||isTag;
   var ctx={ev:ctx0.ev.filter(function(k){return confirmed[k]}),show:confirmed.show?ctx0.show:''};
   var base={},evl={};
   ALL.forEach(function(sn){
-    var b=C[sn].slice();
-    if(sn!=='pos')b=b.filter(function(l){return l.indexOf('{s}')<0});
-    if(mode==='posts')b=b.concat(CP[sn]);
-    if(sn==='pos'&&!(slogan.split(' ').length>=3))b=b.filter(function(l){return l.indexOf('{s}')<0});
+    var b=(lang==='hi'?HI.C:C)[sn].slice();
+    if(mode==='posts')b=b.concat((lang==='hi'?HI.CP:CP)[sn]||[]);
+    b=b.filter(function(l){return l.indexOf('{s}')<0});
     base[sn]=b;
     var e=[];
-    ctx.ev.forEach(function(k){e=e.concat(EV[k][sn])});
-    if(ctx.show)e=e.concat(SH[sn]);
+    if(lang==='hi'){ctx.ev.forEach(function(k){if(HI.EV[k]&&HI.EV[k][sn])e=e.concat(HI.EV[k][sn])})}
+    else{ctx.ev.forEach(function(k){e=e.concat(EV[k][sn])});if(ctx.show)e=e.concat(SH[sn])}
     evl[sn]=e;
   });
   var seen={},out=[],tries=0,used=0;
@@ -626,18 +725,19 @@ function generate(data,raw){
     var sn=sel==='mix'?ST[rand(4)]:sel;
     var useEv=evl[sn].length&&Math.random()<0.4;
     var core=pick(useEv?evl[sn]:base[sn]);
-    var ij=pick(IJ[sn]),cl=(mode==='posts'||Math.random()<0.35)?pick(CL[sn]):'';
-    if(/^(Unpopular opinion|Honest|Be honest|Real talk|Genuine)/i.test(core))ij='';
+    var ij=pick((lang==='hi'?HI.IJ:IJ)[sn]),cl=(mode==='posts'||Math.random()<0.35)?pick((lang==='hi'?HI.CL:CL)[sn]):'';
+    if(/^(Unpopular opinion|Honest|Be honest|Real talk|Genuine|Sach|Seedhi|Dekho)/i.test(core))ij='';
     var name=(nm.full!==nm.first&&Math.random()<0.35)?nm.full:nm.first;
     var body=fill(core,name,slogan,ctx.show);
     if(ij&&/[,:]$/.test(ij)&&core.charAt(0)!=='{')body=lcFirst(body);
+    if(Math.random()<0.18)body=body.replace(/!$/,'!!');
     var txt=[ij,body,fill(cl,name,slogan,ctx.show)].filter(Boolean).join(' ');
-    if(needTag)txt+=' '+tag;
+    if(needTag)txt+='\n\n'+tagText;
     if(txt.length>280||seen[txt])continue;
     seen[txt]=1;out.push({t:txt,s:sn});if(useEv)used++;
   }
   results=out;resultsMode=mode;render();
-  var msg='Made '+out.length+' '+mode+' in a natural fan voice';
+  var msg='Made '+out.length+' '+mode+(lang==='hi'?' in Hinglish':' in a natural fan voice');
   if(data.news.length){
     var labels=ctx.ev.map(function(k){return EV[k].label});
     if(ctx.show)labels.push(ctx.show);
@@ -646,12 +746,14 @@ function generate(data,raw){
     else if(poss)msg+='. The news mentions '+poss+' possible event'+(poss>1?'s':'')+'. Tick the ones you have checked and are true, and the lines will use them. Until then they stay general.';
     else msg+='. The latest news was checked, but nothing specific stood out, so the lines are general.';
   }else msg+='. No recent news was found, so the lines are general.';
-  if(isTag&&nm.full.indexOf(' ')<0&&nm.full.length>=9&&!/[A-Z]/.test(raw.slice(2)))msg+=' Tip: type the full name in the News keyword box so the lines can use it.';
+  if((isTag&&nm.full.indexOf(' ')<0&&nm.full.length>=9&&!/[A-Z]/.test(raw.slice(2)))||(!isTag&&!nm.found))msg+=' Tip: type the full name in the News keyword box so the lines can use it.';
   if(out.length<n)msg+=' That is the most unique ones this setting can give; try Mixed for more.';
   if(mode==='comments'&&replyId()&&out.length>10)msg+=' Tip: many replies on one post can look like spam, so use just a few per post and put them in your own words.';
   status(msg);
+  ttReact(data.news.length?'done':'nonews',out.length);
 }
 
+function langVal(){var r=document.querySelector('input[name=lang]:checked');return r?r.value:'en'}
 function typeVal(){var r=document.querySelector('input[name=type]:checked');return r?r.value:'mix'}
 function typeLabel(){var r=document.querySelector('input[name=type]:checked');if(!r)return'';var l=document.querySelector('label[for="'+r.id+'"]');return l?l.textContent:''}
 function replyId(){
@@ -689,7 +791,7 @@ function render(){
     var cnt=document.createElement('div');cnt.className='cnt';cnt.appendChild(bg);cnt.appendChild(mt);cnt.appendChild(c);
     var acts=document.createElement('div');acts.className='acts';
     var b=document.createElement('button');b.type='button';b.className='btn sm';b.innerHTML=IC.copy+'<span class="bl">Copy</span>';
-    b.addEventListener('click',function(){copyText(t).then(function(ok){flash(b,ok?'Copied':'Copy failed')})});
+    b.addEventListener('click',function(){copyText(t).then(function(ok){flash(b,ok?'Copied':'Copy failed');if(ok)ttReact('copied')})});
     var x=document.createElement('a');x.className='btn sm primary';x.target='_blank';x.rel='noopener noreferrer';
     if(rid){
       x.href='https://x.com/i/status/'+rid;
@@ -751,6 +853,7 @@ function run(force){
     cache={k:key,data:d0};confirmed={};showIntel(d0);generate(d0,raw);reveal();return;
   }
   setBusy(true);status('Searching the latest news for "'+(kw||words(raw))+'"…');
+  ttReact('start');
   research(raw,kw,region).then(function(d){
     cache={k:key,data:d};confirmed={};showIntel(d);generate(d,raw);reveal();
   }).catch(function(){
@@ -776,7 +879,7 @@ toggleReply();
 $('go').addEventListener('click',function(){run(true)});
 $('again').addEventListener('click',function(){run(false)});
 $('q').addEventListener('keydown',function(e){if(e.key==='Enter')run(true)});
-$('all').addEventListener('click',function(){var b=$('all');copyText(results.map(function(r){return r.t}).join('\n\n')).then(function(ok){flash(b,ok?'Copied all':'Copy failed')})});
+$('all').addEventListener('click',function(){var b=$('all');copyText(results.map(function(r){return r.t}).join('\n\n----------\n\n')).then(function(ok){flash(b,ok?'Copied all':'Copy failed')})});
 (function appShell(){
   if(typeof window==='undefined')return;
   var root=document.documentElement,deferred=null;
@@ -804,6 +907,188 @@ $('all').addEventListener('click',function(){var b=$('all');copyText(results.map
   if('serviceWorker' in navigator&&location.protocol==='https:'){
     window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
   }
+})();
+
+var TT_BODY=`<g class="tt-tail" style="transform-origin:172px 232px">
+  <path d="M172 234 Q218 236 216 198 Q214 172 194 166" fill="none" stroke="#1D1B1C" stroke-width="15" stroke-linecap="round"/>
+  <path d="M172 234 Q218 236 216 198 Q214 172 194 166" fill="none" stroke="#EF6A4F" stroke-width="15" stroke-dasharray="5 10" stroke-dashoffset="6"/>
+  <circle cx="194" cy="166" r="8.5" fill="#EF6A4F"/><circle cx="194" cy="166" r="4" fill="#1D1B1C"/>
+</g>
+<g class="tt-body" style="transform-origin:120px 262px">
+  <ellipse cx="120" cy="214" rx="50" ry="38" fill="#1D1B1C"/>
+  <ellipse cx="82" cy="228" rx="26" ry="21" fill="#1D1B1C"/>
+  <ellipse cx="158" cy="228" rx="26" ry="21" fill="#1D1B1C"/>
+  <g fill="none" stroke="#EF6A4F" stroke-width="3" stroke-linecap="round">
+    <circle cx="82" cy="226" r="8"/><circle cx="158" cy="226" r="8"/>
+    <path d="M100 206 Q104 214 100 222M140 206 Q136 214 140 222"/>
+  </g>
+  <circle cx="82" cy="226" r="2.6" fill="#F59A5B"/><circle cx="158" cy="226" r="2.6" fill="#F59A5B"/>
+  <ellipse cx="104" cy="246" rx="17" ry="10" fill="#1D1B1C"/><ellipse cx="136" cy="246" rx="17" ry="10" fill="#1D1B1C"/>
+  <path d="M98 249v-4M104 250v-5M110 249v-4M130 249v-4M136 250v-5M142 249v-4" stroke="#EF6A4F" stroke-width="2.2" stroke-linecap="round"/>
+</g>
+<g class="tt-head" style="transform-origin:120px 170px">
+  <g class="tt-ear-l" style="transform-origin:84px 78px">
+    <path d="M56 94 Q52 52 68 36 Q96 44 110 70 Z" fill="#1D1B1C" stroke="#1D1B1C" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M66 84 Q65 60 71 50 Q88 56 99 70 Z" fill="#EF6A4F"/>
+    
+  </g>
+  <g class="tt-ear-r" style="transform-origin:156px 78px">
+    <path d="M184 94 Q188 52 172 36 Q144 44 130 70 Z" fill="#1D1B1C" stroke="#1D1B1C" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M174 84 Q175 60 169 50 Q152 56 141 70 Z" fill="#EF6A4F"/>
+    
+  </g>
+  <path d="M48 134 L34 142 L50 150 Z" fill="#1D1B1C" stroke="#1D1B1C" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M192 134 L206 142 L190 150 Z" fill="#1D1B1C" stroke="#1D1B1C" stroke-width="5" stroke-linejoin="round"/>
+  <ellipse cx="120" cy="120" rx="74" ry="62" fill="#1D1B1C"/>
+  <ellipse cx="92" cy="86" rx="30" ry="12" fill="#2A2627" opacity=".5"/>
+  <g fill="none" stroke="#EF6A4F" stroke-linecap="round">
+    <path d="M120 66 L120 84" stroke-width="5"/>
+    <path d="M104 70 Q108 80 110 90" stroke-width="4"/><path d="M136 70 Q132 80 130 90" stroke-width="4"/>
+    <path d="M88 76 Q92 84 94 92" stroke-width="3"/><path d="M152 76 Q148 84 146 92" stroke-width="3"/>
+  </g>
+  <g fill="none" stroke="#F59A5B" stroke-width="3" stroke-linecap="round">
+    <circle cx="60" cy="112" r="6.5"/><circle cx="180" cy="112" r="6.5"/>
+  </g>
+  <circle cx="60" cy="112" r="2.2" fill="#EF6A4F"/><circle cx="180" cy="112" r="2.2" fill="#EF6A4F"/>
+  <g class="tt-eyes-open">
+    <g class="tt-eye" style="transform-origin:92px 126px">
+      <ellipse cx="92" cy="126" rx="26" ry="24" fill="#EF6A4F"/>
+      <ellipse cx="92" cy="126" rx="22" ry="20" fill="none" stroke="#1D1B1C" stroke-width="2"/>
+      <circle cx="92" cy="127" r="16.5" fill="#F3C14B"/>
+      <circle cx="92" cy="127" r="17" fill="none" stroke="#F59A5B" stroke-width="2.5"/>
+      <ellipse cx="92" cy="127" rx="6.5" ry="12" fill="#1D1B1C"/>
+      <circle cx="98" cy="120" r="5.2" fill="#fff"/><circle cx="86" cy="135" r="2.4" fill="#fff"/>
+    </g>
+    <g class="tt-eye" style="transform-origin:148px 126px">
+      <ellipse cx="148" cy="126" rx="26" ry="24" fill="#EF6A4F"/>
+      <ellipse cx="148" cy="126" rx="22" ry="20" fill="none" stroke="#1D1B1C" stroke-width="2"/>
+      <circle cx="148" cy="127" r="16.5" fill="#F3C14B"/>
+      <circle cx="148" cy="127" r="17" fill="none" stroke="#F59A5B" stroke-width="2.5"/>
+      <ellipse cx="148" cy="127" rx="6.5" ry="12" fill="#1D1B1C"/>
+      <circle cx="154" cy="120" r="5.2" fill="#fff"/><circle cx="142" cy="135" r="2.4" fill="#fff"/>
+    </g>
+  </g>
+  <g class="tt-eyes-happy" fill="none" stroke="#EF6A4F" stroke-width="6" stroke-linecap="round">
+    <path d="M72 130 Q92 108 112 130"/><path d="M128 130 Q148 108 168 130"/>
+  </g>
+  <g fill="none" stroke="#EF6A4F" stroke-linecap="round" stroke-width="4">
+    <path d="M106 150 Q101 160 94 170"/><path d="M134 150 Q139 160 146 170"/>
+  </g>
+  <ellipse cx="68" cy="152" rx="10" ry="6" fill="#F36F5E" opacity=".75"/><ellipse cx="172" cy="152" rx="10" ry="6" fill="#F36F5E" opacity=".75"/>
+  <path d="M120 146 Q110 146 111 152 Q112 158 120 163 Q128 158 129 152 Q130 146 120 146 Z" fill="#EF6A4F"/>
+  <path d="M116 149 Q119 148 121 150" stroke="#F8A58B" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M120 163 Q120 171 111 172 M120 163 Q120 171 129 172" fill="none" stroke="#EF6A4F" stroke-width="3" stroke-linecap="round"/>
+  <g stroke="#F8A58B" stroke-width="1.8" stroke-linecap="round" opacity=".9">
+    <path d="M78 158 L52 154M78 164 L54 170"/><path d="M162 158 L188 154M162 164 L186 170"/>
+  </g>
+  <path d="M82 178 Q120 196 158 178" fill="none" stroke="#EF6A4F" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="120" cy="192" r="8" fill="#F3C14B" stroke="#F59A5B" stroke-width="2"/>
+  <path d="M118 187l-1.4 9M123 187l-1.4 9M114.5 190h11M113.8 193.6h11" stroke="#1D1B1C" stroke-width="1.5" stroke-linecap="round"/>
+</g>
+`;
+function ttSvg(vb){return '<svg class="tt" viewBox="'+vb+'" aria-hidden="true" focusable="false">'+TT_BODY+'</svg>'}
+var TT={ready:false,open:false,mode:'',i:0,quiet:false,hl:null,timer:null,q:0,quipT:null,moodT:null,lastCopy:0,taps:0,tapT:null};
+var TOUR=[
+ {m:"Hi, I'm Tatsar, your guide. I'll show you how to turn a hashtag into posts and comments in a few quick steps.",h:1},
+ {t:function(){return $('q').parentNode},m:"Start here. Type a hashtag or a tagline. It goes alone on the last line of every post, so it can count towards the trend."},
+ {t:function(){return $('kw').parentNode.parentNode},m:"Optional, but it helps. Add the person's full name so I can find the right news, and choose the news region."},
+ {t:function(){return $('lm').parentNode},m:"Choose Posts or Comments. For comments, paste the link of the post you want to reply to."},
+ {t:function(){return $('lt').parentNode},m:"Pick the type: positive, critical, negative, balanced, questioning, or mixed."},
+ {t:function(){return $('ll').parentNode},m:"English or Hinglish. Hinglish sounds more like real fans on X."},
+ {t:function(){return $('n').parentNode.parentNode},m:"How many lines do you want? Anything from 1 to 100. The quick buttons help."},
+ {t:function(){return $('go')},m:"Now tap this button. I'll check the latest news first, then write your lines."},
+ {t:function(){return $('output')},m:"Your lines show up here. Tick only the news facts you have checked and know are true. Then use Copy or Post on X. For replies, the comment is copied and the post opens."},
+ {m:"That's it! Tap me any time you need help. Mrrp.",h:1,end:1}
+];
+var QUIPS=["Mrrp! Need a hand? Tap me.","I'm Tatsar. I know all the buttons.","Purr... I do like a tidy hashtag.","Paws ready. Just say when.","Tip: tap Regenerate for a fresh batch.","Tip: only tick news facts you have checked.","Tip: add the full name in News keyword for better lines.","Hinglish is on the menu, if you like it.","*stretches and yawns*","Tip: a few edited lines beat fifty copies."];
+function ttMood(ms){
+  var w=$('tt');w.classList.add('happy');clearTimeout(TT.moodT);
+  TT.moodT=setTimeout(function(){w.classList.remove('happy')},ms||1600);
+}
+function ttReduce(){return window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches}
+function ttSay(text,ms){
+  if(TT.open)return;
+  var q=$('ttQuip');q.textContent=text;q.hidden=false;ttMood(1500);
+  clearTimeout(TT.quipT);TT.quipT=setTimeout(function(){q.hidden=true},ms||5000);
+}
+function ttReact(kind,n){
+  if(!TT.ready||TT.quiet)return;
+  if(kind==='start')ttSay("On it! Sniffing out fresh headlines.",4000);
+  else if(kind==='done')ttSay("Done! "+n+" fresh line"+(n===1?'':'s')+", still warm.",5000);
+  else if(kind==='nonews')ttSay("No fresh news turned up, so I kept the lines general.",6000);
+  else if(kind==='copied'){var t=Date.now();if(t-TT.lastCopy>8000){TT.lastCopy=t;ttSay("Copied! Paste it anywhere you like.",3500)}}
+}
+function ttClear(){if(TT.hl){TT.hl.classList.remove('tt-hl');TT.hl=null}}
+function ttActions(list){
+  var box=$('ttActions');box.textContent='';var focus=null;
+  list.forEach(function(a){
+    var b=document.createElement('button');b.type='button';b.className='btn sm'+(a.p?' primary':'');b.textContent=a.l;b.addEventListener('click',a.f);box.appendChild(b);
+    if(a.p)focus=b;
+  });
+  return focus;
+}
+function ttOpen(){TT.open=true;$('ttPanel').hidden=false;$('ttQuip').hidden=true;$('ttBtn').setAttribute('aria-expanded','true')}
+function ttClose(){ttClear();TT.open=false;TT.mode='';$('ttPanel').hidden=true;$('ttBtn').setAttribute('aria-expanded','false')}
+function ttProg(i){
+  var p=$('ttProg');p.textContent='';
+  for(var k=0;k<TOUR.length;k++){var d=document.createElement('i');if(k<=i)d.className='on';p.appendChild(d)}
+  p.hidden=false;
+}
+function ttStep(i){
+  TT.mode='tour';TT.i=i;ttOpen();ttClear();
+  var st=TOUR[i];$('ttMsg').textContent=st.m;ttProg(i);
+  var t=st.t?st.t():null;
+  if(t&&!t.hidden){TT.hl=t;t.classList.add('tt-hl');t.scrollIntoView({block:'start',behavior:ttReduce()?'auto':'smooth'})}
+  if(st.h)ttMood(2200);
+  var acts=[];
+  if(i>0&&!st.end)acts.push({l:'Back',f:function(){ttStep(i-1)}});
+  acts.push({l:st.end?'Finish':'Next',p:1,f:function(){if(st.end)ttClose();else ttStep(i+1)}});
+  if(!st.end)acts.push({l:'Skip',f:ttClose});
+  var f=ttActions(acts);if(f)f.focus();
+}
+function ttGreet(){
+  TT.mode='greet';ttOpen();ttClear();ttMood(2400);
+  $('ttMsg').textContent="Hi! I'm Tatsar, your guide. Want a quick tour of how to write posts and comments?";
+  $('ttProg').hidden=true;
+  var f=ttActions([{l:'Start tour',p:1,f:function(){ttStep(0)}},{l:'Maybe later',f:ttClose}]);if(f)f.focus();
+  try{localStorage.setItem('trendx_tt_seen','1')}catch(e){}
+}
+function ttHelp(){
+  TT.mode='help';ttOpen();ttClear();ttMood(1400);
+  $('ttMsg').textContent="Mrrp! Need a hand? I can walk you through the page, or give you a quick tip.";
+  $('ttProg').hidden=true;
+  var f=ttActions([{l:'Start tour',p:1,f:function(){ttStep(0)}},{l:'Give me a tip',f:function(){$('ttMsg').textContent=QUIPS[4+(TT.q++%5)].replace(/^Tip: /,'');ttMood(1200)}},{l:'Close',f:ttClose}]);if(f)f.focus();
+}
+function ttSchedule(){
+  clearTimeout(TT.timer);
+  TT.timer=setTimeout(function(){
+    if(!document.hidden&&!TT.open&&!busy&&!TT.quiet)ttSay(QUIPS[TT.q++%QUIPS.length],5200);
+    ttSchedule();
+  },38000+Math.random()*20000);
+}
+(function tatsarInit(){
+  if(typeof window==='undefined')return;
+  var head='20 14 200 204';
+  $('ttAvatar').innerHTML=ttSvg(head);$('ttMini').innerHTML=ttSvg(head);
+  $('ttLoad').innerHTML=ttSvg(head);$('ttEmpty').innerHTML=ttSvg('24 14 208 252');
+  try{TT.quiet=localStorage.getItem('trendx_tt_quiet')==='1'}catch(e){}
+  $('ttQuiet').checked=TT.quiet;
+  $('ttQuiet').addEventListener('change',function(){
+    TT.quiet=$('ttQuiet').checked;
+    try{localStorage.setItem('trendx_tt_quiet',TT.quiet?'1':'0')}catch(e){}
+    if(TT.quiet)$('ttQuip').hidden=true;
+  });
+  $('ttBtn').addEventListener('click',function(){
+    TT.taps++;clearTimeout(TT.tapT);TT.tapT=setTimeout(function(){TT.taps=0},1300);
+    if(TT.taps>=3){TT.taps=0;ttClose();ttSay("Purrrr... right behind the ears, please.",4500);return}
+    if(TT.open)ttClose();else ttHelp();
+  });
+  $('ttClose').addEventListener('click',function(){ttClose();$('ttBtn').focus()});
+  $('ttTour').addEventListener('click',function(){ttStep(0)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&TT.open){ttClose();$('ttBtn').focus()}});
+  TT.ready=true;ttSchedule();
+  var seen=false;try{seen=localStorage.getItem('trendx_tt_seen')==='1'}catch(e){}
+  if(!seen)setTimeout(function(){if(!TT.open)ttGreet()},1600);
 })();
 })();
 </script>
