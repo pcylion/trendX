@@ -768,7 +768,7 @@ function replyInfo(){
   if(!v)return;
   if(!id){el.textContent='That does not look like an X post link. It should contain /status/ and a number.';return}
   var a=document.createElement('a');a.href='https://x.com/i/status/'+id;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Open that post to check it';
-  el.appendChild(document.createTextNode('Each comment is copied and this post opens, so you can paste it into the reply box. '));el.appendChild(a);
+  el.appendChild(document.createTextNode('Each comment opens X as a reply to this post, with the text filled in, and is also copied in case you need to paste it. '));el.appendChild(a);
 }
 function toggleReply(){
   var m=document.querySelector('input[name=mode]:checked').value;
@@ -794,12 +794,12 @@ function render(){
     b.addEventListener('click',function(){copyText(t).then(function(ok){flash(b,ok?'Copied':'Copy failed');if(ok)ttReact('copied')})});
     var x=document.createElement('a');x.className='btn sm primary';x.target='_blank';x.rel='noopener noreferrer';
     if(rid){
-      x.href='https://x.com/i/status/'+rid;
-      x.innerHTML=IC.ext+'<span class="bl">Copy and open post</span>';
+      x.href='https://x.com/intent/post?in_reply_to='+rid+'&text='+encodeURIComponent(t);
+      x.innerHTML=IC.ext+'<span class="bl">Reply on X</span>';
       x.addEventListener('click',function(){
         var ok=copySync(t);
-        flash(x,ok?'Copied':'Copy failed');
-        status(ok?'Comment copied. In X, tap the reply box, paste it, then tap Reply.':'Could not copy. Use the Copy button first, then open the post.');
+        flash(x,ok?'Opening X':'Opening X');
+        status(ok?'X is opening with your reply filled in. If the box is empty, paste it (already copied), then tap Reply.':'X is opening with your reply filled in. If the box is empty, use the Copy button and paste it.');
       });
     }else{
       x.href='https://x.com/intent/tweet?text='+encodeURIComponent(t);
