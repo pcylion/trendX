@@ -261,8 +261,9 @@ details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
       </div>
       <div class="two">
         <div>
-          <label class="lbl" for="kw">News keyword <span class="opt">(optional)</span></label>
-          <input id="kw" class="inp" type="text" maxlength="80" autocomplete="off">
+          <label class="lbl" for="art">Article <span class="opt">(optional)</span></label>
+          <textarea id="art" class="inp" rows="4" maxlength="12000" style="min-height:96px;resize:vertical" placeholder="Paste the article text, or its link. It is cross-checked with other news before it is used."></textarea>
+          <p class="small" style="margin-top:6px">Links work for many news sites, but some block reading. If a link fails, paste the text.</p>
         </div>
         <div>
           <label class="lbl" for="region">News region</label>
@@ -304,11 +305,11 @@ details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
         </div>
       </div>
       <div>
-        <label class="lbl" for="n">How many (1 to 100)</label>
+        <label class="lbl" for="n">How many (1 to 20)</label>
         <div class="countrow">
           <div class="stepper">
             <button type="button" id="dec" aria-label="Decrease by 5">&minus;</button>
-            <input id="n" type="number" min="1" max="100" value="10" inputmode="numeric">
+            <input id="n" type="number" min="1" max="20" value="10" inputmode="numeric">
             <button type="button" id="inc" aria-label="Increase by 5">+</button>
           </div>
           <div class="chips" id="chips" aria-label="Quick counts"></div>
@@ -366,7 +367,8 @@ details.adv p{color:var(--muted);font-size:.85rem;margin:2px 0 10px}
 
 <footer class="legal">
   <h3>Responsible use</h3>
-  <p>Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This app only writes text. The Post on X button opens X with the text filled in, and you press Post yourself. For replies, the comment is copied and the post opens so you can paste it into the reply box. Automated mass posting can break X's rules and get accounts limited. Critical and negative lines stay on opinions about the game and the claims, with no insults, threats or false accusations, and they are not meant to be posted in bulk at one person.</p>
+  <p>Headlines come from Google News, Bing News and GDELT, so they can occasionally fail or lag. Check facts before you post. This app only writes text. The Post on X button opens X with the text filled in, and you press Post yourself. For replies, X opens as a reply to that post with the comment filled in, and the comment is also copied in case you need to paste it. Automated mass posting can break X's rules and get accounts limited. Critical and negative lines stay on opinions about the game and the claims, with no insults, threats or false accusations, and they are not meant to be posted in bulk at one person.</p>
+  <p>Terms of use: you are responsible for everything you post. Do not use TrendX to harass or defame anyone, to spread false claims, to impersonate people, or to make a trend look bigger than it is with many similar posts. TrendX only writes draft text and never posts for you. It does not collect or store what you write or generate. Headlines and facts come from third-party sources and may be wrong, so check them first. The text is provided as is, without warranty.</p>
   <p>Install: on Android tap Install above. On iPhone use Share, then Add to Home Screen.</p>
 </footer>
 
@@ -455,7 +457,9 @@ var results=[],resultsMode='posts',cache={k:null,data:null},busy=false,confirmed
 function status(m){$('status').textContent=m}
 function words(raw){return raw.replace(/^#/,'').replace(/[_\-]+/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([A-Za-z])(\d)/g,'$1 $2').replace(/(\d)([A-Za-z])/g,'$1 $2').replace(/\s+/g,' ').trim()}
 function stripStop(raw){return words(raw).split(' ').filter(function(w){return !STOP[w.toLowerCase()]}).join(' ')}
-function proxyBase(){var v=($('proxy').value||'').trim();return v?v.replace(/\/+$/,''):''}
+function relayUrl(u){var b=proxyBase();return b+(/\/exec$/.test(b)?'?url=':'/?url=')+encodeURIComponent(u)}
+var DEFAULT_RELAY='';
+function proxyBase(){var v=($('proxy').value||'').trim()||DEFAULT_RELAY;return v?v.replace(/\/+$/,''):''}
 
 function getText(url,ms){
   var c=new AbortController(),t=setTimeout(function(){c.abort()},ms||9000);
@@ -490,7 +494,7 @@ function fromRss2json(d){
 }
 function viaRelays(url){
   var enc=encodeURIComponent(url),ps=[],base=proxyBase();
-  if(base)ps.push(getText(base+'/?url='+enc,9000).then(parseXML));
+  if(base)ps.push(getText(relayUrl(url),9000).then(parseXML));
   ps.push(getText('https://api.allorigins.win/raw?url='+enc,8000).then(parseXML));
   ps.push(getText('https://api.codetabs.com/v1/proxy/?quest='+enc,8000).then(parseXML));
   ps.push(getText('https://corsproxy.io/?url='+enc,8000).then(parseXML));
@@ -505,7 +509,7 @@ function viaGdelt(q,quoted,days){
     return d.articles.map(function(a){return{title:a.title,link:a.url,date:gdeltDate(a.seendate),source:a.domain||''}});
   };
   var ps=[getJSON(u,9000).then(conv)],base=proxyBase();
-  if(base)ps.push(getText(base+'/?url='+encodeURIComponent(u),9000).then(function(t){return conv(JSON.parse(t))}));
+  if(base)ps.push(getText(relayUrl(u),9000).then(function(t){return conv(JSON.parse(t))}));
   return firstOK(ps);
 }
 
@@ -579,10 +583,10 @@ function showIntel(d){
       ul.appendChild(li);
     });
     el.appendChild(ul);
-    if(d.auto){var tip=document.createElement('p');tip.className='small';tip.style.marginTop='8px';tip.textContent='Wrong topic? Type a more exact keyword in the News keyword box and run again.';el.appendChild(tip)}
+    if(d.auto){var tip=document.createElement('p');tip.className='small';tip.style.marginTop='8px';tip.textContent='Wrong topic? Paste the exact article in the Article box and run again.';el.appendChild(tip)}
   }else{
     var m=document.createElement('p');
-    m.textContent=d.offline?'You are offline, so the news could not be checked. The lines below are general. Reconnect and run again for news-based lines.':d.ok?'No news from the last 30 days matched this search. Try the News keyword box with the full name plus the show or event.':'No recent news came back. Either there is none for this search, or the free news relays were blocked. Try again in a minute, use the News keyword box, or add your own relay under Advanced.';
+    m.textContent=d.offline?'You are offline, so the news could not be checked. The lines below are general. Reconnect and run again for news-based lines.':d.ok?'No news from the last 30 days matched this search. Try pasting the article you mean in the Article box.':'No recent news came back. Either there is none for this search, or the free news relays were blocked. Try again in a minute, paste the article in the Article box, or add your own relay under Advanced.';
     el.appendChild(m);
   }
   var cx=newsContext(d.news);
@@ -700,7 +704,7 @@ function lcFirst(s){return /^I(\b|')/.test(s)?s:s.charAt(0).toLowerCase()+s.slic
 function fill(s,n,sl,show){return s.replace(/\{n\}/g,n).replace(/\{s\}/g,sl).replace(/\{show\}/g,show)}
 
 function generate(data,raw){
-  var n=Math.max(1,Math.min(100,parseInt($('n').value,10)||10));$('n').value=n;
+  var n=Math.max(1,Math.min(20,parseInt($('n').value,10)||10));$('n').value=n;
   var mode=document.querySelector('input[name=mode]:checked').value;
   var sel=typeVal(),ht=$('ht').checked;
   var isTag=raw.charAt(0)==='#',lang=langVal();
@@ -719,11 +723,13 @@ function generate(data,raw){
     else{ctx.ev.forEach(function(k){e=e.concat(EV[k][sn])});if(ctx.show)e=e.concat(SH[sn])}
     evl[sn]=e;
   });
+  var apts=data.art?data.art.points.filter(function(pt,i){return confirmed['p'+i]}):[];
+  if(apts.length){ALL.forEach(function(sn){(lang==='hi'?AR_HI:AR)[sn].forEach(function(tp){apts.forEach(function(pt){evl[sn].push(tp.replace(/\{p\}/g,function(){return pt.t}))})})})}
   var seen={},out=[],tries=0,used=0;
   while(out.length<n&&tries<n*80){
     tries++;
     var sn=sel==='mix'?ST[rand(4)]:sel;
-    var useEv=evl[sn].length&&Math.random()<0.4;
+    var useEv=evl[sn].length&&Math.random()<(apts.length?0.85:0.4);
     var core=pick(useEv?evl[sn]:base[sn]);
     var ij=pick((lang==='hi'?HI.IJ:IJ)[sn]),cl=(mode==='posts'||Math.random()<0.35)?pick((lang==='hi'?HI.CL:CL)[sn]):'';
     if(/^(Unpopular opinion|Honest|Be honest|Real talk|Genuine|Sach|Seedhi|Dekho)/i.test(core))ij='';
@@ -738,7 +744,8 @@ function generate(data,raw){
   }
   results=out;resultsMode=mode;render();
   var msg='Made '+out.length+' '+mode+(lang==='hi'?' in Hinglish':' in a natural fan voice');
-  if(data.news.length){
+  if(data.art){msg+=apts.length?'. Based on the '+apts.length+' article point'+(apts.length>1?'s':'')+' you ticked.':'. Tick at least one article point to base the lines on it. Until then they stay general.'}
+  else if(data.news.length){
     var labels=ctx.ev.map(function(k){return EV[k].label});
     if(ctx.show)labels.push(ctx.show);
     var poss=ctx0.ev.length+(ctx0.show?1:0);
@@ -746,11 +753,11 @@ function generate(data,raw){
     else if(poss)msg+='. The news mentions '+poss+' possible event'+(poss>1?'s':'')+'. Tick the ones you have checked and are true, and the lines will use them. Until then they stay general.';
     else msg+='. The latest news was checked, but nothing specific stood out, so the lines are general.';
   }else msg+='. No recent news was found, so the lines are general.';
-  if((isTag&&nm.full.indexOf(' ')<0&&nm.full.length>=9&&!/[A-Z]/.test(raw.slice(2)))||(!isTag&&!nm.found))msg+=' Tip: type the full name in the News keyword box so the lines can use it.';
+  if((isTag&&nm.full.indexOf(' ')<0&&nm.full.length>=9&&!/[A-Z]/.test(raw.slice(2)))||(!isTag&&!nm.found))msg+=' Tip: paste an article above, or type the full name in the topic box, so the lines can use it.';
   if(out.length<n)msg+=' That is the most unique ones this setting can give; try Mixed for more.';
   if(mode==='comments'&&replyId()&&out.length>10)msg+=' Tip: many replies on one post can look like spam, so use just a few per post and put them in your own words.';
   status(msg);
-  ttReact(data.news.length?'done':'nonews',out.length);
+  ttReact((data.news.length||data.art)?'done':'nonews',out.length);
 }
 
 function langVal(){var r=document.querySelector('input[name=lang]:checked');return r?r.value:'en'}
@@ -842,12 +849,149 @@ function reveal(){
   if(o&&o.scrollIntoView&&!window.matchMedia('(min-width:900px)').matches)o.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});
 }
 
+var AR={
+pos:["Good to see this: {p}.","This is the kind of news we need: {p}.","Reading this made my day: {p}.","Credit where it is due: {p}."],
+crit:["This needs a proper explanation: {p}.","Reading this, it is not good enough: {p}.","People deserve clear answers: {p}.","If this is accurate, questions need to be asked: {p}."],
+neg:["Really disappointing: {p}.","This is hard to defend: {p}.","Not okay: {p}."],
+bal:["Let us wait for the full picture: {p}.","Here is what is reported: {p}. Worth hearing every side.","Facts first, opinions later: {p}."],
+ask:["What do you all think? {p}.","Is this true? {p}. Waiting for more details.","Any official word on this? {p}."]};
+var AR_HI={
+pos:["Achhi khabar: {p}.","Dil khush ho gaya: {p}.","Aisi hi khabrein chahiye: {p}."],
+crit:["Iska jawab milna chahiye: {p}.","Padhke lagta hai yeh kaafi nahi hai: {p}.","Logon ko saaf jawab chahiye: {p}."],
+neg:["Bahut nirash karne wali baat hai: {p}.","Yeh theek nahi hai: {p}.","Isko defend karna mushkil hai: {p}."],
+bal:["Poori baat aane do: {p}.","Report ke mutabik: {p}. Dono side suno.","Pehle facts, phir opinion: {p}."],
+ask:["Aap sab kya sochte ho? {p}.","Kya yeh sach hai? {p}. Aur details ka intezaar hai.","Koi official update aaya kya? {p}."]};
+var AST={that:1,with:1,from:1,have:1,this:1,will:1,been:1,were:1,they:1,their:1,after:1,about:1,which:1,would:1,could:1,says:1,said:1,over:1,into:1,more:1,than:1,what:1,when:1,also:1,just:1,some:1,other:1,there:1,here:1,news:1};
+function toks(t){var o=[],seen={};(String(t).toLowerCase().match(/[a-z\u00c0-\u024f0-9]{3,}/g)||[]).forEach(function(w){if(!STOP[w]&&!AST[w]&&!seen[w]){seen[w]=1;o.push(w)}});return o}
+function hostOf(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return''}}
+function clauseOf(s){
+  s=String(s).replace(/\s*\([^)]*\)/g,'').replace(/\s+/g,' ').replace(/[.!?:;,\s]+$/,'').trim();
+  if(s.length<=120)return s.length>=30?s:null;
+  var parts=s.split(/,\s|\s[\u2013\u2014-]\s|;\s/);
+  for(var i=0;i<parts.length;i++){var q=parts[i].trim();if(q.length>=45&&q.length<=120)return q}
+  return null;
+}
+function articlePoints(title,body){
+  var sents=body.replace(/\s+/g,' ').split(/(?<=[.!?])\s+(?=[A-Z0-9"\u201C\u2018'])/),cand=[],seen={},t0=clauseOf(title);
+  sents.slice(0,40).forEach(function(sn,i){
+    if(/^(also read|read more|photo|image|file photo|follow us|subscribe|advertisement)/i.test(sn))return;
+    var c=clauseOf(sn);if(!c)return;
+    var k=c.toLowerCase();if(seen[k]||(t0&&k===t0.toLowerCase()))return;seen[k]=1;
+    var sc=Math.max(0,4-i*0.25);
+    if(/\d/.test(c))sc+=2;
+    sc+=Math.min(3,(c.slice(1).match(/\b[A-Z][a-z]+/g)||[]).length)*0.7;
+    if(/\b(said|says|announced|confirmed|revealed|will|has|have|after|against|plans?|ordered|arrested|won|lost)\b/i.test(c))sc+=1;
+    cand.push({t:c,sc:sc,i:i});
+  });
+  cand.sort(function(a,b){return b.sc-a.sc});
+  var top=cand.slice(0,5).sort(function(a,b){return a.i-b.i}).map(function(x){return{t:x.t,sup:0}});
+  if(t0)top.unshift({t:t0,sup:0,isTitle:true});
+  return top;
+}
+function parseArticleHTML(html,url){
+  if(/^\s*blocked\s*$/i.test(html))throw new Error('relay');
+  var doc=new DOMParser().parseFromString(html,'text/html');
+  [].slice.call(doc.querySelectorAll('script,style,nav,footer,aside,form,noscript')).forEach(function(n){n.remove()});
+  var og=doc.querySelector('meta[property="og:title"]'),h1=doc.querySelector('h1'),tt=doc.querySelector('title');
+  var title=((og&&og.getAttribute('content'))||(h1&&h1.textContent)||(tt&&tt.textContent)||'').replace(/\s+/g,' ').trim().replace(/\s[|\u2013\u2014-]\s[^|\u2013\u2014-]{2,40}$/,'');
+  var body=[].slice.call(doc.querySelectorAll('p')).map(function(p){return p.textContent.replace(/\s+/g,' ').trim()}).filter(function(t){return t.length>50}).join(' ');
+  if(title.length<10||body.length<200)throw new Error('read');
+  return{title:title,body:body.slice(0,12000),url:url,host:hostOf(url)};
+}
+function loadArticle(raw){
+  if(/^https?:\/\/\S+$/i.test(raw)){
+    if(!/^https:/i.test(raw))return Promise.reject(new Error('link'));
+    var enc=encodeURIComponent(raw),ps=[];
+    if(proxyBase())ps.push(getText(relayUrl(raw),12000).then(function(h){return parseArticleHTML(h,raw)}));
+    ps.push(getText('https://api.allorigins.win/raw?url='+enc,12000).then(function(h){return parseArticleHTML(h,raw)}));
+    ps.push(getText('https://api.codetabs.com/v1/proxy/?quest='+enc,12000).then(function(h){return parseArticleHTML(h,raw)}));
+    ps.push(getText('https://corsproxy.io/?url='+enc,12000).then(function(h){return parseArticleHTML(h,raw)}));
+    return firstOK(ps).catch(function(){throw new Error('link')});
+  }
+  var lines=raw.split(/\n+/).map(function(l){return l.trim()}).filter(Boolean),title,body;
+  if(lines.length>1&&lines[0].length<=160&&!/[.!?]$/.test(lines[0])){title=lines[0];body=lines.slice(1).join(' ')}
+  else{body=lines.join(' ');var m=/^(.{20,160}?[.!?])(\s|$)/.exec(body);title=m?m[1]:body.slice(0,140)}
+  if(body.length<80)return Promise.reject(new Error('short'));
+  return Promise.resolve({title:title.replace(/[.!?]+$/,''),body:body.slice(0,12000),url:'',host:''});
+}
+function srcKey(n){return(n.source||hostOf(n.url||'')||n.title).toLowerCase()}
+function crossCheck(a,region){
+  var q=a.title.length>100?a.title.slice(0,100):a.title,tk=toks(a.title);
+  return fetchNews(q,false,region,7).then(function(r){return r.items.length>=3?r:fetchNews(q,false,region,30).then(function(r2){return r2.items.length>r.items.length?r2:r})}).then(function(r){
+    var need=Math.max(3,Math.ceil(tk.length*0.4)),matched=[],srcs={};
+    r.items.forEach(function(n){
+      if(a.host&&hostOf(n.url||'')===a.host)return;
+      var nt=toks(n.title),sh=tk.filter(function(w){return nt.indexOf(w)>-1}).length;
+      if(sh>=need){matched.push(n);srcs[srcKey(n)]=1}
+    });
+    var total=Object.keys(srcs).length,pts=articlePoints(a.title,a.body);
+    pts.forEach(function(p){
+      if(p.isTitle){p.sup=total;return}
+      var pk=toks(p.t),nd=Math.max(2,Math.ceil(pk.length*0.5)),ss={};
+      r.items.forEach(function(n){var nt=toks(n.title);if(pk.filter(function(w){return nt.indexOf(w)>-1}).length>=nd)ss[srcKey(n)]=1});
+      p.sup=Object.keys(ss).length;
+    });
+    return{wiki:null,news:matched.slice(0,6),q:a.title,ok:r.ok,auto:false,offline:false,art:{title:a.title,host:a.host,url:a.url,points:pts,sources:total,reached:r.ok}};
+  });
+}
+function showArtIntel(d){
+  var el=$('intel');el.textContent='';var a=d.art;
+  var h=document.createElement('h2');h.textContent='Article check';el.appendChild(h);
+  var t=document.createElement('p');t.className='small';
+  t.appendChild(document.createTextNode('Article: '));
+  if(a.url)t.appendChild(link(a.title,a.url));else t.appendChild(document.createTextNode(a.title));
+  el.appendChild(t);
+  var v=document.createElement('p');v.style.marginTop='8px';
+  if(!a.reached)v.textContent='The news sources could not be reached, so this article could not be cross-checked. Check it yourself before using it.';
+  else if(a.sources>=2)v.textContent='Other outlets report the same story ('+a.sources+' sources found, which may include the original outlet). That makes it more likely to be real, but it is not proof.';
+  else if(a.sources===1)v.textContent='Only 1 other source matched. Treat this as unconfirmed and check it yourself.';
+  else v.textContent='No other source matched. It may be very new, a rumour, or not real. Check it yourself before using it.';
+  el.appendChild(v);
+  if(d.news.length){
+    var ul=document.createElement('ul');
+    d.news.forEach(function(n){
+      var li=document.createElement('li');li.appendChild(link(n.title,n.url));
+      var bits=[];if(n.source)bits.push(n.source);bits.push(ago(n.ts));
+      var sp=document.createElement('span');sp.className='small';sp.textContent=' ('+bits.join(', ')+')';li.appendChild(sp);ul.appendChild(li);
+    });
+    el.appendChild(ul);
+  }
+  var box=document.createElement('div');box.className='confirm';
+  var ch=document.createElement('h2');ch.textContent='Pick the points the lines will use';box.appendChild(ch);
+  var cn=document.createElement('p');cn.className='small';cn.textContent='This only shows whether other outlets say the same thing. It cannot prove a point is true. Points found elsewhere are ticked for you. Untick anything you are not sure about.';box.appendChild(cn);
+  a.points.forEach(function(pt,i){
+    var row=document.createElement('label');row.className='crow';
+    var cb=document.createElement('input');cb.type='checkbox';cb.checked=!!confirmed['p'+i];
+    cb.addEventListener('change',function(){confirmed['p'+i]=cb.checked;run(false)});
+    var tx=document.createElement('span');
+    var t1=document.createElement('span');t1.textContent=pt.t;
+    var t2=document.createElement('span');t2.className='small';
+    t2.textContent=pt.sup>=1?'Also in headlines from '+pt.sup+' other source'+(pt.sup>1?'s':''):'Only in your article, not found in other headlines';
+    tx.appendChild(t1);tx.appendChild(document.createElement('br'));tx.appendChild(t2);
+    row.appendChild(cb);row.appendChild(tx);box.appendChild(row);
+  });
+  el.appendChild(box);el.hidden=false;
+}
+function runArticle(raw,art,region,key){
+  if(typeof navigator!=='undefined'&&navigator.onLine===false){status('You are offline, so the article cannot be cross-checked. Reconnect and try again.');return}
+  setBusy(true);status('Reading the article…');ttReact('start');
+  loadArticle(art).then(function(a){status('Cross-checking with other news sources…');return crossCheck(a,region)}).then(function(d){
+    cache={k:key,data:d};confirmed={};
+    d.art.points.forEach(function(pt,i){if(d.art.sources>=2&&pt.sup>=1)confirmed['p'+i]=true});
+    showArtIntel(d);generate(d,raw);reveal();
+  }).catch(function(e){
+    var m=e&&e.message;
+    status(m==='short'?'That text is too short. Paste the full article, or at least a few sentences.':'Could not read that. If it is a link, the site may block reading, or the free relays may be down. Paste the article text instead.');
+  }).then(function(){setBusy(false)});
+}
+
 function run(force){
   if(busy)return;
-  var raw=$('q').value.trim(),kw=$('kw').value.trim().replace(/([a-z])([A-Z])/g,'$1 $2'),region=$('region').value;
+  var raw=$('q').value.trim(),kw='',art=($('art').value||'').trim(),region=$('region').value;
   if(!raw){status('Enter a hashtag or tagline first.');$('q').focus();return}
-  var key=raw+'|'+kw+'|'+region+'|'+proxyBase();
+  var key=raw+'|'+art+'|'+region+'|'+proxyBase();
   if(!force&&cache.k===key&&cache.data){generate(cache.data,raw);return}
+  if(art){runArticle(raw,art,region,key);return}
   if(typeof navigator!=='undefined'&&navigator.onLine===false){
     var d0={wiki:null,news:[],q:kw||words(raw),ok:false,auto:!kw,offline:true};
     cache={k:key,data:d0};confirmed={};showIntel(d0);generate(d0,raw);reveal();return;
@@ -863,12 +1007,12 @@ function run(force){
 
 var chipEls=[];
 function syncChips(){var v=parseInt($('n').value,10);chipEls.forEach(function(c){c.el.className=c.v===v?'chip on':'chip'})}
-[5,10,25,50,100].forEach(function(v){
+[5,10,15,20].forEach(function(v){
   var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=v;
   b.addEventListener('click',function(){$('n').value=v;syncChips()});$('chips').appendChild(b);chipEls.push({v:v,el:b});
 });
 $('dec').addEventListener('click',function(){var v=parseInt($('n').value,10)||10;$('n').value=Math.max(1,v-5);syncChips()});
-$('inc').addEventListener('click',function(){var v=parseInt($('n').value,10)||10;$('n').value=Math.min(100,v+5);syncChips()});
+$('inc').addEventListener('click',function(){var v=parseInt($('n').value,10)||10;$('n').value=Math.min(20,v+5);syncChips()});
 $('n').addEventListener('input',syncChips);
 syncChips();
 try{var sp=localStorage.getItem('trendx_relay');if(sp)$('proxy').value=sp}catch(e){}
@@ -991,16 +1135,16 @@ var TT={ready:false,open:false,mode:'',i:0,quiet:false,hl:null,timer:null,q:0,qu
 var TOUR=[
  {m:"Hi, I'm Tatsar, your guide. I'll show you how to turn a hashtag into posts and comments in a few quick steps.",h:1},
  {t:function(){return $('q').parentNode},m:"Start here. Type a hashtag or a tagline. It goes alone on the last line of every post, so it can count towards the trend."},
- {t:function(){return $('kw').parentNode.parentNode},m:"Optional, but it helps. Add the person's full name so I can find the right news, and choose the news region."},
+ {t:function(){return $('art').parentNode.parentNode},m:"Optional. Paste a news article or its link. I will check whether other outlets report it, then you pick the points to use. You can also choose the news region."},
  {t:function(){return $('lm').parentNode},m:"Choose Posts or Comments. For comments, paste the link of the post you want to reply to."},
  {t:function(){return $('lt').parentNode},m:"Pick the type: positive, critical, negative, balanced, questioning, or mixed."},
  {t:function(){return $('ll').parentNode},m:"English or Hinglish. Hinglish sounds more like real fans on X."},
- {t:function(){return $('n').parentNode.parentNode},m:"How many lines do you want? Anything from 1 to 100. The quick buttons help."},
+ {t:function(){return $('n').parentNode.parentNode},m:"How many lines do you want? Anything from 1 to 20. The quick buttons help."},
  {t:function(){return $('go')},m:"Now tap this button. I'll check the latest news first, then write your lines."},
  {t:function(){return $('output')},m:"Your lines show up here. Tick only the news facts you have checked and know are true. Then use Copy or Post on X. For replies, the comment is copied and the post opens."},
  {m:"That's it! Tap me any time you need help. Mrrp.",h:1,end:1}
 ];
-var QUIPS=["Mrrp! Need a hand? Tap me.","I'm Tatsar. I know all the buttons.","Purr... I do like a tidy hashtag.","Paws ready. Just say when.","Tip: tap Regenerate for a fresh batch.","Tip: only tick news facts you have checked.","Tip: add the full name in News keyword for better lines.","Hinglish is on the menu, if you like it.","*stretches and yawns*","Tip: a few edited lines beat fifty copies."];
+var QUIPS=["Mrrp! Need a hand? Tap me.","I'm Tatsar. I know all the buttons.","Purr... I do like a tidy hashtag.","Paws ready. Just say when.","Tip: tap Regenerate for a fresh batch.","Tip: only tick news facts you have checked.","Tip: paste an article and I will cross-check it first.","Hinglish is on the menu, if you like it.","*stretches and yawns*","Tip: a few edited lines beat fifty copies."];
 function ttMood(ms){
   var w=$('tt');w.classList.add('happy');clearTimeout(TT.moodT);
   TT.moodT=setTimeout(function(){w.classList.remove('happy')},ms||1600);
